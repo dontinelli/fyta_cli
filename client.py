@@ -4,15 +4,18 @@
 
 from __future__ import annotations
 
-FYTA_AUTH_URL = 'http://web.fyta.de/api/auth'
-FYTA_PLANT_URL = 'http://web.fyta.de/api/user-plant'
-
 import requests
-from datetime import datetime
+import logging
+from datetime import datetime, timedelta
 
 import asyncio
-from aiohttp import ClientSession
+from aiohttp import BasicAuth, ClientSession
 from dataclasses import dataclass, field
+
+FYTA_AUTH_URL = 'http://web.fyta.de/api/auth/login'
+FYTA_PLANT_URL = 'http://web.fyta.de/api/user-plant'
+
+_LOGGER = logging.getLogger(__name__)
 
 class Client(object):
     def __init__(self, email: str, password: str, access_token = "", expiration = None):
@@ -36,8 +39,9 @@ class Client(object):
         """Test the connection to FYTA-Server"""
 
         response = await self.session.post(FYTA_AUTH_URL)
+        r=await response.text()
 
-        if await response.text() == '{"message":"Missing Authentication Token"}':
+        if r == '{"message": "Unsupported Media Type"}':
             return True
 
         return False
@@ -46,9 +50,6 @@ class Client(object):
     async def login(self) -> dict[str, str]:
         """Handle a request to FYTA."""
 
-        header = {
-            "Content-Type": "application/json",
-        }
         payload = {
             'email': self.email,
             'password': self.password,
@@ -56,35 +57,24 @@ class Client(object):
 
         try:
             async with asyncio.timeout(self.request_timeout):
-                response = await self.session.post(
-                    FYTA_AUTH_URL,
-                    data = payload,
-                    headers = header,
-                )
+                response = await self.session.post(url=FYTA_AUTH_URL, auth=BasicAuth(self.email, self.password), json=payload)
+
         except asyncio.TimeoutError as exception:
+            _LOGGER.exception("timeout error")
             msg = "Timeout occurred while connecting to Fyta-server"
-            raise HomeassistantAnalyticsConnectionError(msg) from exception
+            #raise HomeassistantAnalyticsConnectionError(msg) from exception
 
         content_type = response.headers.get("Content-Type", "")
 
-        if "application/json" not in content_type:
-            text = await response.text()
-            msg = "Unexpected response from Fyta-Server"
-            raise HomeassistantAnalyticsError(
-                msg,
-                {"Content-Type": content_type, "response": text},
-            )
-
         json_response = await response.json()
 
-        #print(content_type)
-        #print(header)
-        #print(payload)
-        #print(json_response)
+        if json_response == '{"statusCode":404,"error":"Not Found"}':
+            _LOGGER.exception("Authentication failed")
+            raise ConfigEntryAuthFailed
 
         self.access_token = json_response["access_token"]
         self.refresh_token = json_response["refresh_token"]
-        self.expiration = datetime.now() + datetime.time( 0, 0, json_response["expires_in"])
+        self.expiration = datetime.now() + timedelta(seconds=int(json_response["expires_in"]))
 
         return {"access_token": self.access_token, "expiration": self.expiration}
 
@@ -111,16 +101,6 @@ class Client(object):
         except asyncio.TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise HomeassistantAnalyticsConnectionError(msg) from exception
-
-        content_type = response.headers.get("Content-Type", "")
-
-        if "application/json" not in content_type:
-            text = await response.text()
-            msg = "Unexpected response from Homeassistant Analytics"
-            raise HomeassistantAnalyticsError(
-                msg,
-                {"Content-Type": content_type, "response": text},
-            )
 
         json_response = await response.json()
 
@@ -155,16 +135,6 @@ class Client(object):
         except asyncio.TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise HomeassistantAnalyticsConnectionError(msg) from exception
-
-        content_type = response.headers.get("Content-Type", "")
-
-        if "application/json" not in content_type:
-            text = await response.text()
-            msg = "Unexpected response from Homeassistant Analytics"
-            raise HomeassistantAnalyticsError(
-                msg,
-                {"Content-Type": content_type, "response": text},
-            )
 
         plant = await response.json()
 
