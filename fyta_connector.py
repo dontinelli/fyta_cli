@@ -47,36 +47,42 @@ class FytaConnector(object):
 
         plant_list = await self.update_data()
 
-        for plant in plant_list:
-            current_plant = await update_plant_data(plant["plant_id"])
-            plants |= {plant["plant_id"], current_plant}
+        for plant in plant_list.keys():
+            current_plant = await self.update_plant_data(plant)
+            if current_plant is not {}:
+                plants |= {plant: current_plant}
 
         self.plants = plants
 
         return plants
 
-    async def update_plant_data(self, plant_id):
+    async def update_plant_data(self, plant_id: int):
 
-        plant_data = await self.client.get_plant_data(plant_id)
+        p = await self.client.get_plant_data(plant_id)
+        plant_data = p["plant"]
+
+        if plant_data["sensor"] is None:
+            return {}
 
         current_plant = {}
-        current_plant |= {"online", True}
-        current_plant |= {"battery_status", bool(plant_data["sensor"]["is_battery_low"])}
-        current_plant |= {"plant_id", plant_data["plant"]["plant_id"]}
-        current_plant |= {"name", plant_data["plant"]["nickname"]}
-        current_plant |= {"scientific_name", plant_data["plant"]["scientific_name"]}
-        current_plant |= {"status", int(plant_data["plant"]["status"])}
-        current_plant |= {"temperature_status", int(plant_data["masurements"]["temperature"]["status"])}
-        current_plant |= {"light_status", int(plant_data["masurements"]["light"]["status"])}
-        current_plant |= {"moisture_status", int(plant_data["masurements"]["moisture"]["status"])}
-        current_plant |= {"salinity_status", int(plant_data["masurements"]["salinity"]["status"])}
-        current_plant |= {"ph", float(plant_data["masurements"]["ph"]["values"]["current"])}
-        current_plant |= {"temperature", float(plant_data["masurements"]["temperature"]["values"]["current"])}
-        current_plant |= {"light", float(plant_data["masurements"]["light"]["values"]["current"])}
-        current_plant |= {"moisture", float(plant_data["masurements"]["moisture"]["values"]["current"])}
-        current_plant |= {"salinity", float(plant_data["masurements"]["salinity"]["values"]["current"])}
-        current_plant |= {"battery_level", float(plant_data["masurements"]["battery"])}
-        current_plant |= {"last_updated", datetime.fromisoformat(plant_data["sensor"]["received_data_at"])}
+        current_plant |= {"online": True}
+        current_plant |= {"battery_status": bool(plant_data["sensor"]["is_battery_low"])}
+        current_plant |= {"sw_version": plant_data["sensor"]["version"]}
+        current_plant |= {"plant_id": plant_data["plant_id"]}
+        current_plant |= {"name": plant_data["nickname"]}
+        current_plant |= {"scientific_name": plant_data["scientific_name"]}
+        current_plant |= {"status": int(plant_data["status"])}
+        current_plant |= {"temperature_status": int(plant_data["measurements"]["temperature"]["status"])}
+        current_plant |= {"light_status": int(plant_data["measurements"]["light"]["status"])}
+        current_plant |= {"moisture_status": int(plant_data["measurements"]["moisture"]["status"])}
+        current_plant |= {"salinity_status": int(plant_data["measurements"]["salinity"]["status"])}
+        #current_plant |= {"ph": float(plant_data["measurements"]["ph"]["values"]["current"])}
+        current_plant |= {"temperature": float(plant_data["measurements"]["temperature"]["values"]["current"])}
+        current_plant |= {"light": float(plant_data["measurements"]["light"]["values"]["current"])}
+        current_plant |= {"moisture": float(plant_data["measurements"]["moisture"]["values"]["current"])}
+        current_plant |= {"salinity": float(plant_data["measurements"]["salinity"]["values"]["current"])}
+        current_plant |= {"battery_level": float(plant_data["measurements"]["battery"])}
+        current_plant |= {"last_updated": datetime.fromisoformat(plant_data["sensor"]["received_data_at"])}
 
         return current_plant
 
