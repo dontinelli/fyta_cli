@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
-import requests
-import logging
 from datetime import datetime, timedelta
+import json
+import logging
+import requests
 
 import asyncio
 from aiohttp import BasicAuth, ClientSession
@@ -47,8 +48,11 @@ class Client(object):
         return False
 
 
-    async def login(self) -> dict[str, str]:
+    async def login(self) -> dict:
         """Handle a request to FYTA."""
+
+        if self.access_token != "" and self.expiration > datetime.now():
+            return {"access_token": self.access_token, "expiration": self.expiration}
 
         payload = {
             'email': self.email,
@@ -78,7 +82,7 @@ class Client(object):
 
         return {"access_token": self.access_token, "expiration": self.expiration}
 
-    async def get_plants(self, plant_id: int) -> dict:
+    async def get_plants(self) -> dict:
         """Get a list of all available plants from FYTA"""
 
         if self.session is None:
@@ -90,23 +94,23 @@ class Client(object):
 
         header = {
             "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json",
         }
 
         try:
             async with asyncio.timeout(self.request_timeout):
-                response = await self.session.post(
-                    FYTA_PLANT_URL,
-                    headers = header,
-                )
+                response = await self.session.get(url=FYTA_PLANT_URL, headers = header)
         except asyncio.TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise HomeassistantAnalyticsConnectionError(msg) from exception
 
         json_response = await response.json()
 
+        plant_list = json_response["plants"]
+
         plants = {}
-        for plant in json_response["plants"]:
-            plants |= {plant["plant_id"], plant["nickname"]}
+        for plant in plant_list:
+            plants |= {int(plant["id"]): plant["nickname"]}
 
         return plants
 
@@ -123,15 +127,14 @@ class Client(object):
 
         header = {
             "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json",
         }
+
         url = f"{FYTA_PLANT_URL}/{plant_id}"
 
         try:
             async with asyncio.timeout(self.request_timeout):
-                response = await self.session.post(
-                    url,
-                    headers = header,
-                )
+                response = await self.session.get(url=url, headers = header)
         except asyncio.TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise HomeassistantAnalyticsConnectionError(msg) from exception
