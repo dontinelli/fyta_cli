@@ -1,0 +1,22 @@
+[project]
+name = "fyta_cli"
+version = "0.1"
+authors = [
+  { name="dontinelli", email="73341522+dontinelli@users.noreply.github.com" },
+]
+description = "Python library to access the FYTA API"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "aiohttp",
+  "asyncio",
+  "dataclasses",
+  "datetime",
+  "pytz",
+  "requests",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+]
