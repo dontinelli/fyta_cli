@@ -3,7 +3,7 @@
 from datetime import datetime
 import pytz
 
-from .client import Client
+from fyta_client import Client
 
 PLANT_STATUS = {
     1: "too low",
