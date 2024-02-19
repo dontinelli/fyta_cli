@@ -3,14 +3,14 @@
 from datetime import datetime
 import pytz
 
-from fyta_client import Client
+from .fyta_client import Client
 
 PLANT_STATUS = {
-    1: "too low",
+    1: "too_low",
     2: "low",
     3: "perfect",
     4: "high",
-    5: "too high",
+    5: "too_high",
     }
 
 class FytaConnector(object):
@@ -29,7 +29,7 @@ class FytaConnector(object):
         return await self.client.test_connection()
 
 
-    async def login(self) -> bool:
+    async def login(self) -> dict:
         login = await self.client.login()
         self.access_token = login["access_token"]
         self.expiration = login["expiration"]
@@ -38,7 +38,7 @@ class FytaConnector(object):
         return login
 
 
-    async def update_data(self):
+    async def update_plant_list(self):
         self.plant_list = await self.client.get_plants()
 
         return self.plant_list
@@ -47,7 +47,7 @@ class FytaConnector(object):
     async def update_all_plants(self):
         plants = {}
 
-        plant_list = await self.update_data()
+        plant_list = await self.update_plant_list()
 
         for plant in plant_list.keys():
             current_plant = await self.update_plant_data(plant)

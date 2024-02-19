@@ -1,4 +1,4 @@
-"""Asynchronous Python client for FYTA."""
+"""Asynchronous Python client for FYTA - exception classes."""
 
 
 class FytaError(Exception):

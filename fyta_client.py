@@ -12,7 +12,7 @@ import asyncio
 from aiohttp import BasicAuth, ClientSession
 from dataclasses import dataclass, field
 
-from fyta_exceptions import (
+from .fyta_exceptions import (
     FytaError,
     FytaConnectionError,
     FytaAuthentificationError,
@@ -75,14 +75,12 @@ class Client(object):
             msg = "Timeout occurred while connecting to Fyta-server"
             raise FytaConnectionError(msg) from exception
 
-        #content_type = response.headers.get("Content-Type", "")
-
         json_response = await response.json()
 
-        if json_response == '{"statusCode":404,"error":"Not Found"}':
+        if json_response == {"statusCode":404,"error":"Not Found"}:
             _LOGGER.exception("Authentication failed")
             raise FytaAuthentificationError
-        elif json_response == '{"statusCode":401,"error":"Unauthorized","errors":[{"message":"Could not authenticate user"}]}':
+        elif json_response == {"statusCode":401,"error":"Unauthorized","errors":[{"message":"Could not authenticate user"}]}:
             raise FytaPasswordError
 
         self.access_token = json_response["access_token"]
