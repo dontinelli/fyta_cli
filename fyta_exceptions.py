@@ -4,7 +4,6 @@
 class FytaError(Exception):
     """Generic exception."""
 
-
 class FytaConnectionError(FytaError):
     """Analytics connection exception."""
 

@@ -14,6 +14,9 @@ PLANT_STATUS = {
     }
 
 class FytaConnector(object):
+
+    expiration: datetime | None = None
+
     def __init__(self, email, password, access_token = "", expiration = None, timezone: pytz.timezone = pytz.utc):
 
         self.email = email
@@ -70,7 +73,7 @@ class FytaConnector(object):
         current_plant |= {"online": True}
         current_plant |= {"battery_status": bool(plant_data["sensor"]["is_battery_low"])}
         current_plant |= {"sw_version": plant_data["sensor"]["version"]}
-        current_plant |= {"plant_id": plant_data["plant_id"]}
+        current_plant |= {"plant_id": plant_data["id"]}
         current_plant |= {"name": plant_data["nickname"]}
         current_plant |= {"scientific_name": plant_data["scientific_name"]}
         current_plant |= {"status": int(plant_data["status"])}
@@ -97,4 +100,3 @@ class FytaConnector(object):
     def data(self) -> dict:
         """ID for FYTA object"""
         return self.plants
-
