@@ -1,0 +1,37 @@
+[project]
+name = "fyta_cli"
+version = "0.2.3"
+authors = [
+  { name="dontinelli", email="73341522+dontinelli@users.noreply.github.com" },
+]
+description = "Python library to access the FYTA API"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "aiohttp",
+  "asyncio",
+  "dataclasses",
+  "datetime",
+  "pytz",
+  "requests",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+]
+keywords = ["plant", "sensor", "IoT", "smart home", "fyta", "hass", "home assistant"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fyta_cli"]
+
+[project.urls]
+Repository = "https://github.com/dontinelli/fyta_cli.git"
+Issues = "https://github.com/dontinelli/fyta_cli/issues"
+Changelog = "https://github.com/dontinelli/fyta_cly/blob/master/CHANGELOG.md"
+"FYTA homepage" = "https://fyta.de/"
+"API Documentation" = "https://fyta-io.notion.site/FYTA-Public-API-d2f4c30306f74504924c9a40402a3afd"

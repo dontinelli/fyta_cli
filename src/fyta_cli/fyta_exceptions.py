@@ -1,8 +1,9 @@
-"""Asynchronous Python client for FYTA - exception classes."""
+"""Asynchronous Python client for FYTA."""
 
 
 class FytaError(Exception):
     """Generic exception."""
+
 
 class FytaConnectionError(FytaError):
     """Analytics connection exception."""
