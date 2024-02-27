@@ -1,19 +1,17 @@
-"""Client to access FYTA API"""
+"""Client to access FYTA API."""
 # The documentation for the API can be found here:
 # https://fyta-io.notion.site/FYTA-Public-API-d2f4c30306f74504924c9a40402a3afd
 
 from __future__ import annotations
 
+import asyncio
 from datetime import datetime, timedelta
 import logging
-import requests
+from typing import Any
 
-import asyncio
 from aiohttp import BasicAuth, ClientSession
-from dataclasses import dataclass, field
 
 from .fyta_exceptions import (
-    FytaError,
     FytaConnectionError,
     FytaAuthentificationError,
     FytaPasswordError,
@@ -25,10 +23,10 @@ FYTA_PLANT_URL = 'https://web.fyta.de/api/user-plant'
 
 _LOGGER = logging.getLogger(__name__)
 
-class Client(object):
-    def __init__(self, email: str, password: str, access_token = "", expiration = None):
 
-        self.session: ClientSession | None = None
+class Client(object):
+    """Client class to access FYTA API."""
+    def __init__(self, email: str, password: str, access_token = "", expiration = None):
 
         self.email = email
         self.password = password
@@ -36,12 +34,10 @@ class Client(object):
         self.expiration = expiration
         self.refresh_token = ""
 
-        if self.session is None:
-            self.session = ClientSession()
-            self._close_session = True
+        self.session: ClientSession = ClientSession()
+        self._close_session = True
 
         self.request_timeout = 10
-
 
     async def test_connection(self) -> bool:
         """Test the connection to FYTA-Server"""
@@ -55,7 +51,7 @@ class Client(object):
         return False
 
 
-    async def login(self) -> dict:
+    async def login(self) -> dict[str,str | datetime]:
         """Handle a request to FYTA."""
 
         if self.access_token != "" and self.expiration > datetime.now():
@@ -68,7 +64,11 @@ class Client(object):
 
         try:
             async with asyncio.timeout(self.request_timeout):
-                response = await self.session.post(url=FYTA_AUTH_URL, auth=BasicAuth(self.email, self.password), json=payload)
+                response = await self.session.post(
+                    url=FYTA_AUTH_URL,
+                    auth=BasicAuth(self.email, self.password),
+                    json=payload
+                )
 
         except asyncio.TimeoutError as exception:
             _LOGGER.exception("timeout error")
@@ -80,7 +80,11 @@ class Client(object):
         if json_response == {"statusCode":404,"error":"Not Found"}:
             _LOGGER.exception("Authentication failed")
             raise FytaAuthentificationError
-        elif json_response == {"statusCode":401,"error":"Unauthorized","errors":[{"message":"Could not authenticate user"}]}:
+        elif json_response == {
+            "statusCode":401,
+            "error":"Unauthorized",
+            "errors":[{"message":"Could not authenticate user"}]
+        }:
             raise FytaPasswordError
 
         self.access_token = json_response["access_token"]
@@ -89,7 +93,7 @@ class Client(object):
 
         return {"access_token": self.access_token, "expiration": self.expiration}
 
-    async def get_plants(self) -> dict:
+    async def get_plants(self) -> dict[int,str]:
         """Get a list of all available plants from FYTA"""
 
         if self.session is None:
@@ -124,15 +128,15 @@ class Client(object):
 
 
 
-        plant_list = json_response["plants"]
+        plant_list: dict = json_response["plants"]
 
-        plants = {}
+        plants: dict[int,str] = {}
         for plant in plant_list:
             plants |= {int(plant["id"]): plant["nickname"]}
 
         return plants
 
-    async def get_plant_data(self, plant_id: int) -> dict:
+    async def get_plant_data(self, plant_id: int) -> dict[str,Any]:
         """Get information about a specific plant"""
 
         if self.session is None:
@@ -165,7 +169,7 @@ class Client(object):
                 {"Content-Type": content_type, "response": text},
             )
 
-        plant = await response.json()
+        plant: dict[str,Any] = await response.json()
 
         return plant
 
@@ -173,4 +177,3 @@ class Client(object):
         """Close open client session."""
         if self.session and self._close_session:
             await self.session.close()
-
