@@ -24,7 +24,7 @@ FYTA_PLANT_URL = 'https://web.fyta.de/api/user-plant'
 _LOGGER = logging.getLogger(__name__)
 
 
-class Client(object):
+class Client():
     """Client class to access FYTA API."""
     def __init__(self, email: str, password: str, access_token = "", expiration = None):
 
@@ -80,7 +80,7 @@ class Client(object):
         if json_response == {"statusCode":404,"error":"Not Found"}:
             _LOGGER.exception("Authentication failed")
             raise FytaAuthentificationError
-        elif json_response == {
+        if json_response == {
             "statusCode":401,
             "error":"Unauthorized",
             "errors":[{"message":"Could not authenticate user"}]
