@@ -32,7 +32,6 @@ class Client():
         self.password = password
         self.access_token = access_token
         self.expiration = expiration
-        self.refresh_token = ""
 
         self.session: ClientSession = ClientSession()
         self._close_session = True
@@ -88,7 +87,7 @@ class Client():
             raise FytaPasswordError
 
         self.access_token = json_response["access_token"]
-        self.refresh_token = json_response["refresh_token"]
+        #self.refresh_token = json_response["refresh_token"]
         self.expiration = datetime.now() + timedelta(seconds=int(json_response["expires_in"]))
 
         return {"access_token": self.access_token, "expiration": self.expiration}

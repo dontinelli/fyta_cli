@@ -18,6 +18,9 @@ PLANT_STATUS = {
 class FytaConnector:
     """Connector class to access FYTA API."""
 
+    # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-arguments
+
     def __init__(
         self,
         email: str,
