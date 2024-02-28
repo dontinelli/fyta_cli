@@ -125,8 +125,6 @@ class Client():
 
         json_response = await response.json()
 
-
-
         plant_list: dict = json_response["plants"]
 
         plants: dict[int,str] = {}

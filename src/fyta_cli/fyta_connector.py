@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from typing import Any
-import pytz
+from zoneinfo import ZoneInfo
 
 from .fyta_client import Client
 
@@ -27,7 +27,7 @@ class FytaConnector:
         password: str,
         access_token: str = "",
         expiration: datetime | None = None,
-        timezone: pytz.timezone = pytz.utc,
+        tz: str = "",
     ):
         self.email: str = email
         self.password: str = password
@@ -37,7 +37,7 @@ class FytaConnector:
         self.plants: dict[int, dict[str, Any]] = {}
         self.access_token: str = access_token
         self.expiration: datetime | None = expiration
-        self.timezone = timezone
+        self.timezone: ZoneInfo = datetime.timezone.utc if tz == "" else ZoneInfo(tz)
 
     async def test_connection(self) -> bool:
         """Test if connection to FYTA API works."""
@@ -131,9 +131,9 @@ class FytaConnector:
         }
         current_plant |= {"battery_level": float(plant_data["measurements"]["battery"])}
         current_plant |= {
-            "last_updated": self.timezone.localize(
-                datetime.fromisoformat(plant_data["sensor"]["received_data_at"])
-            )
+            "last_updated": datetime.fromisoformat(
+                plant_data["sensor"]["received_data_at"]
+            ).astimezone(self.timezone)
         }
 
         return current_plant
