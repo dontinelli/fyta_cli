@@ -23,12 +23,12 @@ class FytaConnector:
     # pylint: disable=too-many-arguments
 
     def __init__(
-        self,
-        email: str,
-        password: str,
-        access_token: str = "",
-        expiration: datetime | None = None,
-        tz: str = "",
+            self,
+            email: str,
+            password: str,
+            access_token: str = "",
+            expiration: datetime | None = None,
+            tz: str = "",
     ):
         self.email: str = email
         self.password: str = password
@@ -95,17 +95,25 @@ class FytaConnector:
         current_plant |= {"name": safe_get(plant_data, "nickname", str)}
         current_plant |= {"scientific_name": safe_get(plant_data, "scientific_name", str)}
         current_plant |= {"status": safe_get(plant_data, "status", int)}
-        current_plant |= {"temperature_status": safe_get(plant_data, "measurements.temperature.status", int)}
+        current_plant |= {
+            "temperature_status": safe_get(plant_data, "measurements.temperature.status", int)}
         current_plant |= {"light_status": safe_get(plant_data, "measurements.light.status", int)}
-        current_plant |= {"moisture_status": safe_get(plant_data, "measurements.moisture.status", int)}
-        current_plant |= {"salinity_status": safe_get(plant_data, "measurements.salinity.status", int)}
+        current_plant |= {
+            "moisture_status": safe_get(plant_data, "measurements.moisture.status", int)}
+        current_plant |= {
+            "salinity_status": safe_get(plant_data, "measurements.salinity.status", int)}
         current_plant |= {"ph": safe_get(plant_data, "measurements.ph.values.current", float)}
-        current_plant |= {"temperature": safe_get(plant_data, "measurements.temperature.values.current", float)}
+        current_plant |= {
+            "temperature": safe_get(plant_data, "measurements.temperature.values.current", float)}
         current_plant |= {"light": safe_get(plant_data, "measurements.light.values.current", float)}
-        current_plant |= {"moisture": safe_get(plant_data, "measurements.moisture.values.current", float)}
-        current_plant |= {"salinity": safe_get(plant_data, "measurements.salinity.values.current", float)}
+        current_plant |= {
+            "moisture": safe_get(plant_data, "measurements.moisture.values.current", float)}
+        current_plant |= {
+            "salinity": safe_get(plant_data, "measurements.salinity.values.current", float)}
         current_plant |= {"battery_level": safe_get(plant_data, "measurements.battery", float)}
-        current_plant |= {"last_updated": self.timezone.localize(datetime.fromisoformat(plant_data["sensor"]["received_data_at"]))}
+        current_plant |= {
+            "last_updated": self.timezone.localize(
+                datetime.fromisoformat(plant_data["sensor"]["received_data_at"]))}
 
         return current_plant
 

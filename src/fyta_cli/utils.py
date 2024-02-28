@@ -9,8 +9,8 @@ def safe_get(plant_data, key_path, expected_type):
         key_path: The path to the value in the dictionary. Seüarated by dots.
         expected_type: The expected type of the value (int, float, bool and str supported).
 
-    Returns: The value from the dictionary or None if the value is not found or the type is not as expected.
-
+    Returns: The value from the dictionary or None if the value is not found or the type is not
+    as expected.
     """
     keys = key_path.split(".")
     value = plant_data
@@ -21,27 +21,38 @@ def safe_get(plant_data, key_path, expected_type):
                 return None
     except AttributeError:
         return None
-
+    return_value = None
     if expected_type == int:
-        try:
-            return int(value)
-        except (ValueError, TypeError):
-            return None
-    elif expected_type == float:
-        try:
-            return float(value)
-        except (ValueError, TypeError):
-            return None
-    elif expected_type == bool:
-        if isinstance(value, bool):
-            return value
-        elif isinstance(value, str):
-            if value.lower() == "true":
-                return True
-            elif value.lower() == "false":
-                return False
+        return_value = __get_int(value)
+    if expected_type == float:
+        return_value =  __get_float(value)
+    if expected_type == bool:
+        return_value = __get_bool(value)
+    if expected_type == str:
+        return_value = str(value)
+    return return_value
+
+
+def __get_bool(value):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        if value.lower() == "true":
+            return True
+        if value.lower() == "false":
+            return False
+    return None
+
+
+def __get_float(value):
+    try:
+        return float(value)
+    except (ValueError, TypeError):
         return None
-    elif expected_type == str:
-        return str(value)
-    else:
+
+
+def __get_int(value):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
         return None
