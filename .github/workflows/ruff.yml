@@ -1,4 +1,4 @@
-name: "Lint"
+name: "Ruff"
 
 on:
   push:
@@ -26,4 +26,6 @@ jobs:
           run: python3 -m pip install -r requirements.txt
 
         - name: "Run"
-          run: python3 -m ruff check .
+          run: |
+            python3 -m pip install ruff
+            python3 -m ruff check ./src/fyta_cli/*
