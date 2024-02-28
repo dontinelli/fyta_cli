@@ -1,6 +1,6 @@
 [project]
 name = "fyta_cli"
-version = "0.3.0"
+version = "0.3.1"
 authors = [
   { name="dontinelli", email="73341522+dontinelli@users.noreply.github.com" },
 ]
