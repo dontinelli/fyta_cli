@@ -12,8 +12,6 @@ dependencies = [
   "asyncio",
   "dataclasses",
   "datetime",
-  "pytz",
-  "requests",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
