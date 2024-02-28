@@ -1,6 +1,6 @@
 """Connector class to manage access to FYTA API."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -38,7 +38,7 @@ class FytaConnector:
         self.plants: dict[int, dict[str, Any]] = {}
         self.access_token: str = access_token
         self.expiration: datetime | None = expiration
-        self.timezone: ZoneInfo = datetime.timezone.utc if tz == "" else ZoneInfo(tz)
+        self.timezone: ZoneInfo = timezone.utc if tz == "" else ZoneInfo(tz)
 
     async def test_connection(self) -> bool:
         """Test if connection to FYTA API works."""
@@ -112,8 +112,10 @@ class FytaConnector:
             "salinity": safe_get(plant_data, "measurements.salinity.values.current", float)}
         current_plant |= {"battery_level": safe_get(plant_data, "measurements.battery", float)}
         current_plant |= {
-            "last_updated": self.timezone.localize(
-                datetime.fromisoformat(plant_data["sensor"]["received_data_at"]))}
+            "last_updated": datetime.fromisoformat(
+                plant_data["sensor"]["received_data_at"]
+            ).astimezone(self.timezone)
+        }
 
         return current_plant
 
