@@ -5,6 +5,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from .fyta_client import Client
+from .utils import safe_get
 
 PLANT_STATUS = {
     1: "too_low",
@@ -86,55 +87,25 @@ class FytaConnector:
         if plant_data["sensor"] is None:
             return {}
 
-        current_plant: dict[str, Any] = {}
+        current_plant = {}
         current_plant |= {"online": True}
-        current_plant |= {
-            "battery_status": bool(plant_data["sensor"]["is_battery_low"])
-        }
-        current_plant |= {"sw_version": plant_data["sensor"]["version"]}
-        current_plant |= {"plant_id": plant_data["id"]}
-        current_plant |= {"name": plant_data["nickname"]}
-        current_plant |= {"scientific_name": plant_data["scientific_name"]}
-        current_plant |= {"status": int(plant_data["status"])}
-        current_plant |= {
-            "temperature_status": int(
-                plant_data["measurements"]["temperature"]["status"]
-            )
-        }
-        current_plant |= {
-            "light_status": int(plant_data["measurements"]["light"]["status"])
-        }
-        current_plant |= {
-            "moisture_status": int(plant_data["measurements"]["moisture"]["status"])
-        }
-        current_plant |= {
-            "salinity_status": int(plant_data["measurements"]["salinity"]["status"])
-        }
-        # current_plant |= {"ph": float(plant_data["measurements"]["ph"]["values"]["current"])}
-        current_plant |= {
-            "temperature": float(
-                plant_data["measurements"]["temperature"]["values"]["current"]
-            )
-        }
-        current_plant |= {
-            "light": float(plant_data["measurements"]["light"]["values"]["current"])
-        }
-        current_plant |= {
-            "moisture": float(
-                plant_data["measurements"]["moisture"]["values"]["current"]
-            )
-        }
-        current_plant |= {
-            "salinity": float(
-                plant_data["measurements"]["salinity"]["values"]["current"]
-            )
-        }
-        current_plant |= {"battery_level": float(plant_data["measurements"]["battery"])}
-        current_plant |= {
-            "last_updated": datetime.fromisoformat(
-                plant_data["sensor"]["received_data_at"]
-            ).astimezone(self.timezone)
-        }
+        current_plant |= {"battery_status:": safe_get(plant_data, "sensor.is_battery_low", bool)}
+        current_plant |= {"sw_version": safe_get(plant_data, "sensor.version", str)}
+        current_plant |= {"plant_id": safe_get(plant_data, "id", int)}
+        current_plant |= {"name": safe_get(plant_data, "nickname", str)}
+        current_plant |= {"scientific_name": safe_get(plant_data, "scientific_name", str)}
+        current_plant |= {"status": safe_get(plant_data, "status", int)}
+        current_plant |= {"temperature_status": safe_get(plant_data, "measurements.temperature.status", int)}
+        current_plant |= {"light_status": safe_get(plant_data, "measurements.light.status", int)}
+        current_plant |= {"moisture_status": safe_get(plant_data, "measurements.moisture.status", int)}
+        current_plant |= {"salinity_status": safe_get(plant_data, "measurements.salinity.status", int)}
+        current_plant |= {"ph": safe_get(plant_data, "measurements.ph.values.current", float)}
+        current_plant |= {"temperature": safe_get(plant_data, "measurements.temperature.values.current", float)}
+        current_plant |= {"light": safe_get(plant_data, "measurements.light.values.current", float)}
+        current_plant |= {"moisture": safe_get(plant_data, "measurements.moisture.values.current", float)}
+        current_plant |= {"salinity": safe_get(plant_data, "measurements.salinity.values.current", float)}
+        current_plant |= {"battery_level": safe_get(plant_data, "measurements.battery", float)}
+        current_plant |= {"last_updated": self.timezone.localize(datetime.fromisoformat(plant_data["sensor"]["received_data_at"]))}
 
         return current_plant
 
