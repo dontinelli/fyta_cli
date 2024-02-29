@@ -91,7 +91,8 @@ class FytaConnector:
         else:
             current_plant |= {"online": True}
             current_plant |= {"sensor_available": True}
-            current_plant |= {"battery_status:": safe_get(plant_data, "sensor.is_battery_low", bool)}
+            current_plant |= {
+                "battery_status:": safe_get(plant_data, "sensor.is_battery_low", bool)}
             current_plant |= {"sw_version": safe_get(plant_data, "sensor.version", str)}
             current_plant |= {"plant_id": safe_get(plant_data, "plant_id", int)}
             current_plant |= {"name": safe_get(plant_data, "nickname", str)}
@@ -99,15 +100,18 @@ class FytaConnector:
             current_plant |= {"status": safe_get(plant_data, "status", int)}
             current_plant |= {
                 "temperature_status": safe_get(plant_data, "measurements.temperature.status", int)}
-            current_plant |= {"light_status": safe_get(plant_data, "measurements.light.status", int)}
+            current_plant |= {
+                "light_status": safe_get(plant_data, "measurements.light.status", int)}
             current_plant |= {
                 "moisture_status": safe_get(plant_data, "measurements.moisture.status", int)}
             current_plant |= {
                 "salinity_status": safe_get(plant_data, "measurements.salinity.status", int)}
             current_plant |= {"ph": safe_get(plant_data, "measurements.ph.values.current", float)}
             current_plant |= {
-                "temperature": safe_get(plant_data, "measurements.temperature.values.current", float)}
-            current_plant |= {"light": safe_get(plant_data, "measurements.light.values.current", float)}
+                "temperature": safe_get(
+                    plant_data, "measurements.temperature.values.current", float)}
+            current_plant |= {
+                "light": safe_get(plant_data, "measurements.light.values.current", float)}
             current_plant |= {
                 "moisture": safe_get(plant_data, "measurements.moisture.values.current", float)}
             current_plant |= {
