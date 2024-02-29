@@ -53,7 +53,7 @@ class Client():
     async def login(self) -> dict[str,str | datetime]:
         """Handle a request to FYTA."""
 
-        if self.access_token != "" and self.expiration > datetime.now():
+        if self.access_token != "" and self.expiration.timestamp() > datetime.now().timestamp():
             return {"access_token": self.access_token, "expiration": self.expiration}
 
         payload = {
@@ -99,7 +99,7 @@ class Client():
             self.session = ClientSession()
             self._close_session = True
 
-        if self.expiration > datetime.now():
+        if self.expiration.timestamp() > datetime.now().timestamp():
             await self.login() #get new access token, if current token expired
 
         header = {
@@ -140,7 +140,7 @@ class Client():
             self.session = ClientSession()
             self._close_session = True
 
-        if self.expiration > datetime.now():
+        if self.expiration.timestamp() > datetime.now().timestamp():
             await self.login() #get new access token, if current token expired
 
         header = {
