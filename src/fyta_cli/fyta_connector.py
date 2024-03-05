@@ -98,6 +98,8 @@ class FytaConnector:
             current_plant |= {"name": safe_get(plant_data, "nickname", str)}
             current_plant |= {"scientific_name": safe_get(plant_data, "scientific_name", str)}
             current_plant |= {"status": safe_get(plant_data, "status", int)}
+            current_plant |= {"plant_thumb_path": safe_get(plant_data, "plant_thumb_path", str)}
+            current_plant |= {"plant_origin_path": safe_get(plant_data, "plant_origin_path", str)}
             current_plant |= {
                 "temperature_status": safe_get(plant_data, "measurements.temperature.status", int)}
             current_plant |= {
