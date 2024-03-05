@@ -1,6 +1,6 @@
 [project]
 name = "fyta_cli"
-version = "0.3.2"
+version = "0.3.3"
 authors = [
   { name="dontinelli", email="73341522+dontinelli@users.noreply.github.com" },
 ]
@@ -9,9 +9,6 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "aiohttp",
-  "asyncio",
-  "dataclasses",
-  "datetime",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
