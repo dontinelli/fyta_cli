@@ -1,6 +1,6 @@
 [project]
 name = "fyta_cli"
-version = "0.3.3"
+version = "0.3.4"
 authors = [
   { name="dontinelli", email="73341522+dontinelli@users.noreply.github.com" },
 ]
@@ -27,6 +27,6 @@ packages = ["src/fyta_cli"]
 [project.urls]
 Repository = "https://github.com/dontinelli/fyta_cli.git"
 Issues = "https://github.com/dontinelli/fyta_cli/issues"
-Changelog = "https://github.com/dontinelli/fyta_cly/blob/master/CHANGELOG.md"
+Changelog = "https://github.com/dontinelli/fyta_cli/blob/master/CHANGELOG.md"
 "FYTA homepage" = "https://fyta.de/"
 "API Documentation" = "https://fyta-io.notion.site/FYTA-Public-API-d2f4c30306f74504924c9a40402a3afd"
