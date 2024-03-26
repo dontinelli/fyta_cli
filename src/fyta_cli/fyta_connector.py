@@ -1,6 +1,6 @@
 """Connector class to manage access to FYTA API."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -29,7 +29,8 @@ class FytaConnector:
             access_token: str = "",
             expiration: datetime | None = None,
             tz: str = "",
-    ):
+    ) -> None:
+        """Initialize connector class."""
         self.email: str = email
         self.password: str = password
         self.client = Client(email, password, access_token, expiration)
@@ -38,7 +39,7 @@ class FytaConnector:
         self.plants: dict[int, dict[str, Any]] = {}
         self.access_token: str = access_token
         self.expiration: datetime | None = expiration
-        self.timezone: ZoneInfo = timezone.utc if tz == "" else ZoneInfo(tz)
+        self.timezone: ZoneInfo = datetime.UTC if tz == "" else ZoneInfo(tz)
 
     async def test_connection(self) -> bool:
         """Test if connection to FYTA API works."""
@@ -69,7 +70,7 @@ class FytaConnector:
 
         plant_list = await self.update_plant_list()
 
-        for plant in plant_list.keys():
+        for plant in plant_list:
             current_plant = await self.update_plant_data(plant)
             if current_plant != {}:
                 plants |= {plant: current_plant}
@@ -82,13 +83,13 @@ class FytaConnector:
         """Get data of specific plant."""
 
         p: dict = await self.client.get_plant_data(plant_id)
-        plant_data: dict = p["plant"]
 
         current_plant = {}
 
-        if plant_data["sensor"] is None:
+        if ("plant" not in p) or (p["plant"]["sensor"] is None):
             current_plant |= {"sensor_available": False}
         else:
+            plant_data: dict = p["plant"]
             current_plant |= {"online": True}
             current_plant |= {"sensor_available": True}
             current_plant |= {
@@ -129,10 +130,10 @@ class FytaConnector:
 
     @property
     def fyta_id(self) -> str:
-        """ID for FYTA object"""
+        """ID for FYTA object."""
         return self.email
 
     @property
     def data(self) -> dict:
-        """ID for FYTA object"""
+        """ID for FYTA object."""
         return self.plants
