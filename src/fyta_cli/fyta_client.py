@@ -162,6 +162,7 @@ class Client():
 
         if content_type.count("text/html") > 0:
             text = await response.text()
+            msg = f"Error occurred while fetching plant data for plant {plant_id}"
             raise FytaPlantError(
                 msg,
                 {"Content-Type": content_type, "response": text},
