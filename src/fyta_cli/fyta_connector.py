@@ -1,6 +1,6 @@
 """Connector class to manage access to FYTA API."""
 
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -39,7 +39,7 @@ class FytaConnector:
         self.plants: dict[int, dict[str, Any]] = {}
         self.access_token: str = access_token
         self.expiration: datetime | None = expiration
-        self.timezone: ZoneInfo = datetime.UTC if tz == "" else ZoneInfo(tz)
+        self.timezone: ZoneInfo = UTC if tz == "" else ZoneInfo(tz)
 
     async def test_connection(self) -> bool:
         """Test if connection to FYTA API works."""
