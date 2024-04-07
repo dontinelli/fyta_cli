@@ -2,7 +2,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-def safe_get(plant_data: dict, key_path: str, expected_type, tz: ZoneInfo | None):
+def safe_get(plant_data: dict, key_path: str, expected_type, tz: ZoneInfo | None = None):
     """Get a value from a nested dictionary and cast it to the expected type.
 
     Args:
@@ -34,7 +34,7 @@ def safe_get(plant_data: dict, key_path: str, expected_type, tz: ZoneInfo | None
         return_value = str(value)
     if expected_type == datetime:
         return_value = __get_datetime(value, tz)
-    
+
     if "status" in keys and (return_value < 1 or return_value > 5):
         #FYTA status has a scale from 1 to 5; return None, if no correct status is set
         return_value = None
