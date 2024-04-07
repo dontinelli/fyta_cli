@@ -121,9 +121,8 @@ class FytaConnector:
                 "salinity": safe_get(plant_data, "measurements.salinity.values.current", float)}
             current_plant |= {"battery_level": safe_get(plant_data, "measurements.battery", float)}
             current_plant |= {
-                "last_updated": datetime.fromisoformat(
-                    plant_data["sensor"]["received_data_at"]
-                ).astimezone(self.timezone)
+                "last_updated": safe_get(
+                    plant_data, "sensor.received_data_at", datetime, self.timezone)
             }
 
         return current_plant
