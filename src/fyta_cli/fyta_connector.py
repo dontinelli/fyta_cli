@@ -8,6 +8,14 @@ from .fyta_client import Client
 from .utils import safe_get
 
 PLANT_STATUS = {
+    0: "deleted",
+    1: "doing_great",
+    2: "need_attention",
+    3: "need_help",
+}
+
+#status = 0 if user_plant deleted, 1 for user_plant in green, 2 for yellow, 3 for red
+PLANT_MEASUREMENT_STATUS = {
     1: "too_low",
     2: "low",
     3: "perfect",
