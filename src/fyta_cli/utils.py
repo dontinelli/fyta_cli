@@ -35,8 +35,12 @@ def safe_get(plant_data: dict, key_path: str, expected_type, tz: ZoneInfo | None
     if expected_type == datetime:
         return_value = __get_datetime(value, tz)
 
-    if "status" in keys and (return_value < 1 or return_value > 5):
-        #FYTA status has a scale from 1 to 5; return None, if no correct status is set
+    if ".status" in keys and (return_value < 1 or return_value > 5):
+        #FYTA measurement status has a scale from 1 to 5; return None, if no correct status is set
+        return_value = None
+
+    if key_path == "status" and (return_value < 0 or return_value > 3):
+        #FYTA plant status has a scale from 0 to 3; return None, if no correct status is set
         return_value = None
 
     return return_value
