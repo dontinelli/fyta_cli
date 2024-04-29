@@ -7,15 +7,16 @@ from zoneinfo import ZoneInfo
 from .fyta_client import Client
 from .utils import safe_get
 
+#status = 0 if user_plant deleted, 1 for user_plant in green, 2 for yellow, 3 for red
 PLANT_STATUS = {
     0: "deleted",
     1: "doing_great",
     2: "need_attention",
-    3: "need_help",
+    3: "no_sensor",
 }
 
-#status = 0 if user_plant deleted, 1 for user_plant in green, 2 for yellow, 3 for red
 PLANT_MEASUREMENT_STATUS = {
+    0: "no_data",
     1: "too_low",
     2: "low",
     3: "perfect",
