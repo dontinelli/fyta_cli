@@ -76,4 +76,3 @@ def __get_datetime(value: str, tz: str):
         return datetime.fromisoformat(value).astimezone(tz)
     except (ValueError, TypeError):
         return None
-    
