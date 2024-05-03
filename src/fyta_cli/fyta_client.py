@@ -8,6 +8,7 @@ import asyncio
 from datetime import datetime, timedelta
 import logging
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from aiohttp import BasicAuth, ClientSession
 
@@ -16,22 +17,32 @@ from .fyta_exceptions import (
     FytaAuthentificationError,
     FytaPasswordError,
     FytaPlantError,
-    )
+)
 
-FYTA_AUTH_URL = 'https://web.fyta.de/api/auth/login'
-FYTA_PLANT_URL = 'https://web.fyta.de/api/user-plant'
+FYTA_AUTH_URL = "https://web.fyta.de/api/auth/login"
+FYTA_PLANT_URL = "https://web.fyta.de/api/user-plant"
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class Client():
+class Client:
     """Client class to access FYTA API."""
-    def __init__(self, email: str, password: str, access_token = "", expiration = None):
+
+    def __init__(
+        self,
+        email: str,
+        password: str,
+        access_token: str,
+        expiration: datetime,
+        tz: ZoneInfo,
+    ):
+        """Initialization."""
 
         self.email = email
         self.password = password
         self.access_token = access_token
         self.expiration = expiration
+        self.timezone = tz
 
         self.session: ClientSession = ClientSession()
         self._close_session = True
@@ -42,23 +53,25 @@ class Client():
         """Test the connection to FYTA-Server"""
 
         response = await self.session.post(FYTA_AUTH_URL)
-        r=await response.text()
+        r = await response.text()
 
         if r == '{"message": "Unsupported Media Type"}':
             return True
 
         return False
 
-
-    async def login(self) -> dict[str,str | datetime]:
+    async def login(self) -> dict[str, str | datetime]:
         """Handle a request to FYTA."""
 
-        if self.access_token != "" and self.expiration.timestamp() > datetime.now().timestamp():
+        if (
+            self.access_token != ""
+            and self.expiration.timestamp() > datetime.now().timestamp()
+        ):
             return {"access_token": self.access_token, "expiration": self.expiration}
 
         payload = {
-            'email': self.email,
-            'password': self.password,
+            "email": self.email,
+            "password": self.password,
         }
 
         try:
@@ -66,7 +79,7 @@ class Client():
                 response = await self.session.post(
                     url=FYTA_AUTH_URL,
                     auth=BasicAuth(self.email, self.password),
-                    json=payload
+                    json=payload,
                 )
 
         except asyncio.TimeoutError as exception:
@@ -76,23 +89,25 @@ class Client():
 
         json_response = await response.json()
 
-        if json_response == {"statusCode":404,"error":"Not Found"}:
+        if json_response == {"statusCode": 404, "error": "Not Found"}:
             _LOGGER.exception("Authentication failed")
             raise FytaAuthentificationError
         if json_response == {
-            "statusCode":401,
-            "error":"Unauthorized",
-            "errors":[{"message":"Could not authenticate user"}]
+            "statusCode": 401,
+            "error": "Unauthorized",
+            "errors": [{"message": "Could not authenticate user"}],
         }:
             raise FytaPasswordError
 
         self.access_token = json_response["access_token"]
-        #self.refresh_token = json_response["refresh_token"]
-        self.expiration = datetime.now() + timedelta(seconds=int(json_response["expires_in"]))
+        # self.refresh_token = json_response["refresh_token"]
+        self.expiration = datetime.now(self.timezone) + timedelta(
+            seconds=int(json_response["expires_in"])
+        )
 
         return {"access_token": self.access_token, "expiration": self.expiration}
 
-    async def get_plants(self) -> dict[int,str]:
+    async def get_plants(self) -> dict[int, str]:
         """Get a list of all available plants from FYTA"""
 
         if self.session is None:
@@ -100,7 +115,7 @@ class Client():
             self._close_session = True
 
         if self.expiration.timestamp() > datetime.now().timestamp():
-            await self.login() #get new access token, if current token expired
+            await self.login()  # get new access token, if current token expired
 
         header = {
             "Authorization": f"Bearer {self.access_token}",
@@ -109,7 +124,7 @@ class Client():
 
         try:
             async with asyncio.timeout(self.request_timeout):
-                response = await self.session.get(url=FYTA_PLANT_URL, headers = header)
+                response = await self.session.get(url=FYTA_PLANT_URL, headers=header)
         except asyncio.TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise FytaConnectionError(msg) from exception
@@ -128,13 +143,13 @@ class Client():
 
         plant_list: dict = json_response["plants"]
 
-        plants: dict[int,str] = {}
+        plants: dict[int, str] = {}
         for plant in plant_list:
             plants |= {int(plant["id"]): plant["nickname"]}
 
         return plants
 
-    async def get_plant_data(self, plant_id: int) -> dict[str,Any]:
+    async def get_plant_data(self, plant_id: int) -> dict[str, Any]:
         """Get information about a specific plant"""
 
         if self.session is None:
@@ -142,7 +157,7 @@ class Client():
             self._close_session = True
 
         if self.expiration.timestamp() > datetime.now().timestamp():
-            await self.login() #get new access token, if current token expired
+            await self.login()  # get new access token, if current token expired
 
         header = {
             "Authorization": f"Bearer {self.access_token}",
@@ -153,7 +168,7 @@ class Client():
 
         try:
             async with asyncio.timeout(self.request_timeout):
-                response = await self.session.get(url=url, headers = header)
+                response = await self.session.get(url=url, headers=header)
         except asyncio.TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise FytaConnectionError(msg) from exception
@@ -168,7 +183,7 @@ class Client():
                 {"Content-Type": content_type, "response": text},
             )
 
-        plant: dict[str,Any] = await response.json()
+        plant: dict[str, Any] = await response.json()
 
         return plant
 

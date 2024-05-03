@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 from .fyta_client import Client
 from .utils import safe_get
 
-#status = 0 if user_plant deleted, 1 for user_plant in green, 2 for yellow, 3 for red
+# status = 0 if user_plant deleted, 1 for user_plant in green, 2 for yellow, 3 for red
 PLANT_STATUS = {
     0: "deleted",
     1: "doing_great",
@@ -32,23 +32,26 @@ class FytaConnector:
     # pylint: disable=too-many-arguments
 
     def __init__(
-            self,
-            email: str,
-            password: str,
-            access_token: str = "",
-            expiration: datetime | None = None,
-            tz: str = "",
+        self,
+        email: str,
+        password: str,
+        access_token: str = "",
+        expiration: datetime | None = None,
+        tz: str = "",
     ) -> None:
         """Initialize connector class."""
-        self.email: str = email
-        self.password: str = password
-        self.client = Client(email, password, access_token, expiration)
+
+        timezone: ZoneInfo = UTC if tz == "" else ZoneInfo(tz)
+        ex: datetime = (
+            datetime.now(timezone)
+            if expiration is None
+            else expiration.astimezone(timezone)
+        )
         self.online: bool = False
         self.plant_list: dict[int, str] = {}
         self.plants: dict[int, dict[str, Any]] = {}
-        self.access_token: str = access_token
-        self.expiration: datetime | None = expiration
-        self.timezone: ZoneInfo = UTC if tz == "" else ZoneInfo(tz)
+
+        self.client = Client(email, password, access_token, ex, timezone)
 
     async def test_connection(self) -> bool:
         """Test if connection to FYTA API works."""
@@ -59,9 +62,9 @@ class FytaConnector:
         """Login with credentials to get access token."""
 
         login = await self.client.login()
-        self.access_token = login["access_token"]
-        self.expiration = login["expiration"]
-        self.online = True
+
+        if login != {}:
+            self.online = True
 
         return login
 
@@ -102,46 +105,97 @@ class FytaConnector:
             current_plant |= {"online": True}
             current_plant |= {"sensor_available": True}
             current_plant |= {
-                "battery_status:": safe_get(plant_data, "sensor.is_battery_low", bool)}
+                "battery_status:": safe_get(plant_data, "sensor.is_battery_low", bool)
+            }
             current_plant |= {"sw_version": safe_get(plant_data, "sensor.version", str)}
             current_plant |= {"plant_id": safe_get(plant_data, "plant_id", int)}
             current_plant |= {"name": safe_get(plant_data, "nickname", str)}
-            current_plant |= {"scientific_name": safe_get(plant_data, "scientific_name", str)}
+            current_plant |= {
+                "scientific_name": safe_get(plant_data, "scientific_name", str)
+            }
             current_plant |= {"status": safe_get(plant_data, "status", int)}
-            current_plant |= {"plant_thumb_path": safe_get(plant_data, "plant_thumb_path", str)}
-            current_plant |= {"plant_origin_path": safe_get(plant_data, "plant_origin_path", str)}
             current_plant |= {
-                "temperature_status": safe_get(plant_data, "measurements.temperature.status", int)}
+                "plant_thumb_path": safe_get(plant_data, "plant_thumb_path", str)
+            }
             current_plant |= {
-                "light_status": safe_get(plant_data, "measurements.light.status", int)}
+                "plant_origin_path": safe_get(plant_data, "plant_origin_path", str)
+            }
             current_plant |= {
-                "moisture_status": safe_get(plant_data, "measurements.moisture.status", int)}
+                "temperature_status": safe_get(
+                    plant_data, "measurements.temperature.status", int
+                )
+            }
             current_plant |= {
-                "salinity_status": safe_get(plant_data, "measurements.salinity.status", int)}
-            current_plant |= {"ph": safe_get(plant_data, "measurements.ph.values.current", float)}
+                "light_status": safe_get(plant_data, "measurements.light.status", int)
+            }
+            current_plant |= {
+                "moisture_status": safe_get(
+                    plant_data, "measurements.moisture.status", int
+                )
+            }
+            current_plant |= {
+                "salinity_status": safe_get(
+                    plant_data, "measurements.salinity.status", int
+                )
+            }
+            current_plant |= {
+                "ph": safe_get(plant_data, "measurements.ph.values.current", float)
+            }
             current_plant |= {
                 "temperature": safe_get(
-                    plant_data, "measurements.temperature.values.current", float)}
+                    plant_data, "measurements.temperature.values.current", float
+                )
+            }
             current_plant |= {
-                "light": safe_get(plant_data, "measurements.light.values.current", float)}
+                "light": safe_get(
+                    plant_data, "measurements.light.values.current", float
+                )
+            }
             current_plant |= {
-                "moisture": safe_get(plant_data, "measurements.moisture.values.current", float)}
+                "moisture": safe_get(
+                    plant_data, "measurements.moisture.values.current", float
+                )
+            }
             current_plant |= {
-                "salinity": safe_get(plant_data, "measurements.salinity.values.current", float)}
-            current_plant |= {"battery_level": safe_get(plant_data, "measurements.battery", float)}
+                "salinity": safe_get(
+                    plant_data, "measurements.salinity.values.current", float
+                )
+            }
+            current_plant |= {
+                "battery_level": safe_get(plant_data, "measurements.battery", float)
+            }
             current_plant |= {
                 "last_updated": safe_get(
-                    plant_data, "sensor.received_data_at", datetime, self.timezone)
+                    plant_data,
+                    "sensor.received_data_at",
+                    datetime,
+                    self.client.timezone,
+                )
             }
 
         return current_plant
 
     @property
-    def fyta_id(self) -> str:
-        """ID for FYTA object."""
-        return self.email
+    def access_token(self) -> str:
+        """Access token for FYTA API."""
+        return self.client.access_token
 
     @property
     def data(self) -> dict:
         """ID for FYTA object."""
         return self.plants
+
+    @property
+    def email(self) -> str:
+        """Email of FYTA account."""
+        return self.client.email
+
+    @property
+    def expiration(self) -> datetime:
+        """Expiration of access token."""
+        return self.client.expiration
+
+    @property
+    def fyta_id(self) -> str:
+        """ID for FYTA object."""
+        return self.email
