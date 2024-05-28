@@ -211,7 +211,6 @@ class Client:
 
         measurements = await response.json()
 
-        print(measurements)
         if measurements["dli_light"] != []:
             plant["plant"] |= {"dli_light": measurements["dli_light"][0]["dli_light"]}
 

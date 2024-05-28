@@ -151,11 +151,7 @@ class FytaConnector:
                     plant_data, "measurements.light.values.current", float
                 )
             }
-            current_plant |= {
-                "light_dli": safe_get(
-                    plant_data, "dli_light", float
-                )
-            }            
+            current_plant |= {"light_dli": safe_get(plant_data, "dli_light", float)}
             current_plant |= {
                 "moisture": safe_get(
                     plant_data, "measurements.moisture.values.current", float
