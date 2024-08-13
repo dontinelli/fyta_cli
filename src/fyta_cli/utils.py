@@ -24,15 +24,15 @@ def safe_get(plant_data: dict, key_path: str, expected_type, tz: ZoneInfo | None
     except AttributeError:
         return None
     return_value = None
-    if expected_type == int:
+    if expected_type is int:
         return_value = __get_int(value)
-    if expected_type == float:
+    if expected_type is float:
         return_value =  __get_float(value)
-    if expected_type == bool:
+    if expected_type is bool:
         return_value = __get_bool(value)
-    if expected_type == str:
+    if expected_type is str:
         return_value = str(value)
-    if expected_type == datetime:
+    if expected_type is datetime:
         return_value = __get_datetime(value, tz)
 
     if ".status" in keys and (return_value < 0 or return_value > 5):
