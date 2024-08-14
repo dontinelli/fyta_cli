@@ -5,7 +5,6 @@ from enum import IntEnum
 from typing import Any
 
 from mashumaro import DataClassDictMixin, field_options
-from mashumaro.config import BaseConfig
 
 
 @dataclass
@@ -69,7 +68,7 @@ class Plant(DataClassDictMixin):
         d |= {"online": True}
 
         if d.get("measurements") is not None:
-            d |= {"battery_level": d["measurements"]["battery"]}        
+            d |= {"battery_level": d["measurements"]["battery"]}
             d |= {"light": d["measurements"]["light"]["values"]["current"]}
             d |= {"light_status": d["measurements"]["light"].get("status")}
             d |= {"moisture": d["measurements"]["moisture"]["values"]["current"]}
@@ -79,7 +78,7 @@ class Plant(DataClassDictMixin):
             d |= {"salinity_status": d["measurements"]["salinity"].get("status")}
             d |= {"temperature": d["measurements"]["temperature"]["values"]["current"]}
             d |= {"temperature_status": d["measurements"]["temperature"].get("status")}
-        
+
         if d.get("sensor") is not None:
             d |= {"battery_status": d["sensor"]["is_battery_low"]}
             d |= {"last_updated": d["sensor"]["received_data_at"]}
