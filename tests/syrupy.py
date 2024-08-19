@@ -64,4 +64,4 @@ class FytaSnapshotExtension(AmberSnapshotExtension):
     Need to be bumped when we change the FytaSnapshotSerializer.
     """
 
-    serializer_class: type[AmberDataSerializer] = MealieSnapshotSerializer
+    serializer_class: type[AmberDataSerializer] = FytaSnapshotSerializer
