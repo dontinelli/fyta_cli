@@ -18,6 +18,7 @@ from .fyta_exceptions import (
     FytaPasswordError,
     FytaPlantError,
 )
+from .fyta_models import Credentials
 
 FYTA_AUTH_URL = "https://web.fyta.de/api/auth/login"
 FYTA_PLANT_URL = "https://web.fyta.de/api/user-plant"
@@ -63,7 +64,7 @@ class Client:
 
         return False
 
-    async def login(self) -> dict[str, str | datetime]:
+    async def login(self) -> Credentials:
         """Handle a request to FYTA."""
 
         if (
@@ -108,7 +109,7 @@ class Client:
             seconds=int(json_response["expires_in"])
         )
 
-        return {"access_token": self.access_token, "expiration": self.expiration}
+        return Credentials(access_token = self.access_token, expiration = self.expiration)
 
     async def get_plants(self) -> dict[int, str]:
         """Get a list of all available plants from FYTA"""
