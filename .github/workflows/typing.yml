@@ -30,4 +30,4 @@ jobs:
         - name: 🏗 Install mypy
           run: python3 -m pip install mypy
         - name: 🚀 Run mypy
-          run: mypy src tests
+          run: MYPYPATH=src mypy --namespace-packages --explicit-package-bases src tests
