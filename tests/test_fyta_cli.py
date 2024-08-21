@@ -2,9 +2,9 @@
 
 from aioresponses import aioresponses
 
-from src.fyta_cli.fyta_client import FYTA_AUTH_URL
-from src.fyta_cli.fyta_connector import FytaConnector
-from src.fyta_cli.fyta_models import Credentials
+from fyta_cli.fyta_client import FYTA_AUTH_URL
+from fyta_cli.fyta_connector import FytaConnector
+from fyta_cli.fyta_models import Credentials
 
 from . import load_fixture
 

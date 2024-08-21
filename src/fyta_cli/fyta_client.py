@@ -71,7 +71,7 @@ class Client:
             self.access_token != ""
             and self.expiration.timestamp() > datetime.now().timestamp()
         ):
-            return {"access_token": self.access_token, "expiration": self.expiration}
+            return Credentials(access_token = self.access_token, expiration = self.expiration)
 
         payload = {
             "email": self.email,
