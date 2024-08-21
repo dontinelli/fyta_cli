@@ -27,5 +27,7 @@ jobs:
             cache: "pip"
         - name: 🏗 Install dependencies
           run: python3 -m pip install -r requirements.txt
+        - name: 🏗 Install mypy
+          run: python3 -m pip install mypy
         - name: 🚀 Run mypy
           run: mypy src tests
