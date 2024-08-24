@@ -9,9 +9,10 @@ from syrupy import SnapshotAssertion
 
 from fyta_cli.fyta_client import FYTA_AUTH_URL, FYTA_PLANT_URL
 from fyta_cli.fyta_connector import FytaConnector
-from fyta_cli.fyta_models import Credentials,Plant
+from fyta_cli.fyta_models import Credentials, Plant
 
 from . import load_fixture
+
 
 @pytest.mark.parametrize(
     ("response", "return_value"),
@@ -64,13 +65,19 @@ async def test_login(
     await fyta_connector.client.close()
     assert fyta_connector.client.session.closed
 
+
 async def test_login_existing_credentials(
 ) -> None:
     """Test login."""
 
     current_expiration: datetime = datetime.now() + timedelta(days=1)
 
-    fyta_connector = FytaConnector("example@example.com", "examplepassword","111111111111111111111111111111111111111", current_expiration )
+    fyta_connector = FytaConnector(
+        "example@example.com",
+        "examplepassword",
+        "111111111111111111111111111111111111111",
+        current_expiration
+    )
 
     await fyta_connector.login()
 
@@ -81,6 +88,7 @@ async def test_login_existing_credentials(
     assert not fyta_connector.client.session.closed
     await fyta_connector.client.close()
     assert fyta_connector.client.session.closed
+
 
 async def test_get_plant_list(
     responses: aioresponses,
@@ -94,18 +102,19 @@ async def test_get_plant_list(
     )
 
     fyta_connector = FytaConnector(
-        "example@example.com", 
+        "example@example.com",
         "examplepassword",
-        "111111111111111111111111111111111111111", 
+        "111111111111111111111111111111111111111",
         datetime.now() + timedelta(days=1),
-        )
+    )
 
     await fyta_connector.update_plant_list()
-    
+
     assert fyta_connector.data == snapshot
 
     await fyta_connector.client.close()
     assert fyta_connector.client.session.closed
+
 
 async def test_get_plant_data(
     responses: aioresponses,
@@ -131,7 +140,7 @@ async def test_get_plant_data(
         FYTA_PLANT_URL + f"/{2}",
         status=200,
         body=load_fixture("get_plant_details_2.json"),
-    )    
+    )
     responses.post(
         FYTA_PLANT_URL + f"/measurements/{0}",
         status=200,
@@ -146,9 +155,10 @@ async def test_get_plant_data(
         FYTA_PLANT_URL + f"/measurements/{2}",
         status=200,
         body=load_fixture("get_measurements.json"),
-    )        
+    )
 
-    fyta_connector = FytaConnector("example@example.com", "examplepassword","111111111111111111111111111111111111111", datetime.now() + timedelta(days=1) )
+    fyta_connector = FytaConnector("example@example.com", "examplepassword",
+                                   "111111111111111111111111111111111111111", datetime.now() + timedelta(days=1))
 
     plants: dict[int, Plant] = await fyta_connector.update_all_plants()
 
