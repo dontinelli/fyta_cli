@@ -1,0 +1,28 @@
+{
+    "plant": {
+      "id": 2,
+      "nickname": "Traumpflanze",
+      "scientific_name": "",
+      "genus": null,
+      "status": 2,
+      "plant_id": 201,
+      "family_id": null,
+      "thumb_path": "<url>",
+      "origin_path": "<url>",
+      "plant_thumb_path": "<url>",
+      "plant_origin_path": "<url>",
+      "received_data_at": "2023-01-01 10:10:01",
+      "gathering_data": false,
+      "is_illegal": false,
+      "not_supported": false,
+      "sensor_update_available": false,
+      "garden": {
+        "id": 123,
+        "name": "Home"
+      },
+      "sensor": null,
+      "hub": null,
+      "temperature_unit": 1,
+      "know_hows": []
+    }
+  }

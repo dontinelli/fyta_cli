@@ -65,27 +65,26 @@ class FytaConnector:
         plant_list: dict[int, str] = await self.update_plant_list()
 
         for plant in plant_list:
-            current_plant: Plant = await self.update_plant_data(plant)
-            plants |= {plant: current_plant}
+            current_plant: Plant | None = await self.update_plant_data(plant)
+            if current_plant is not None:
+                plants |= {plant: current_plant}
 
         self.plants = plants
 
         return plants
 
-    async def update_plant_data(self, plant_id: int) -> Plant:
+    async def update_plant_data(self, plant_id: int) -> Plant | None:
         """Get data of specific plant."""
 
         p: dict = await self.client.get_plant_data(plant_id)
 
-        current_plant = Plant.from_dict({"key": "value"})
-
         if ("plant" not in p) or (p["plant"]["sensor"] is None):
-            current_plant.sensor_available = False
-        else:
-            plant_data: dict = p["plant"]
+            return None
 
-            current_plant = Plant.from_dict(plant_data)
-            current_plant.last_updated = current_plant.last_updated.astimezone(self.client.timezone)
+        plant_data: dict = p["plant"]
+
+        current_plant = Plant.from_dict(plant_data)
+        current_plant.last_updated = current_plant.last_updated.astimezone(self.client.timezone)
 
         return current_plant
 
@@ -95,7 +94,7 @@ class FytaConnector:
         return self.client.access_token
 
     @property
-    def data(self) -> dict:
+    def data(self) -> dict[int, Plant]:
         """ID for FYTA object."""
         return self.plants
 

@@ -1,0 +1,143 @@
+{
+    "plant": {
+      "id": 0,
+      "nickname": "Gummibaum",
+      "scientific_name": "Ficus elastica",
+      "genus": null,
+      "status": 2,
+      "plant_id": 201,
+      "family_id": null,
+      "thumb_path": "<url>",
+      "origin_path": "<url>",
+      "plant_thumb_path": "<url>",
+      "plant_origin_path": "<url>",
+      "received_data_at": "2023-01-01 10:10:01",
+      "gathering_data": false,
+      "is_illegal": false,
+      "not_supported": false,
+      "sensor_update_available": false,
+      "garden": {
+        "id": 123,
+        "name": "Home"
+      },
+      "sensor": {
+        "id": "AA:AA:AA:2B:AF:F4",
+        "has_sensor": true,
+        "status": 1,
+        "uuid_android": null,
+        "uuid_ios": "AAAAA6BF-0457-3233-8A43-032B5377E763",
+        "version": "0.30.0",
+        "is_battery_low": false,
+        "received_data_at": "2023-01-01 10:10:00",
+        "created_at": "2022-01-01 01:10:10"
+      },
+      "hub": {
+        "id": 123,
+        "hub_id": "AA:AA:AA:27:7D:6A",
+        "status": 1,
+        "received_data_at": "2023-01-00 10:10:00",
+        "reached_hub_at": "2023-01-00 10:10:00"
+      },
+      "measurements": {
+        "ph": {
+          "status": null,
+          "values": {
+            "min": "4",
+            "max": "7",
+            "current": null
+          },
+          "unit": "pH",
+          "absolute_values": {
+            "min": "0",
+            "max": "7.5",
+            "minText": "0",
+            "maxText": "7.5"
+          }
+        },
+        "temperature": {
+          "status": 2,
+          "values": {
+            "min_good": "17",
+            "max_good": "36",
+            "min_acceptable": "10",
+            "max_acceptable": "42",
+            "current": "18",
+            "currentFormatted": "18",
+            "optimal_hours": 22
+          },
+          "unit": "°C/h",
+          "absolute_values": {
+            "min": "0",
+            "max": "50",
+            "minText": "0",
+            "maxText": "50"
+          }
+        },
+        "light": {
+          "status": 1,
+          "values": {
+            "min_good": "20",
+            "max_good": "450",
+            "min_acceptable": "18",
+            "max_acceptable": "675",
+            "current": "2",
+            "currentFormatted": "2",
+            "optimal_hours": 0
+          },
+          "dli_values": {
+            "min_good": "0.25",
+            "max_good": "9",
+            "min_acceptable": "0.06",
+            "max_acceptable": "9"
+          },
+          "unit": "μmol/h",
+          "dli_unit": "mol/day",
+          "absolute_values": {
+            "min": "0",
+            "max": "700",
+            "minText": "0",
+            "maxText": "700"
+          }
+        },
+        "moisture": {
+          "status": 3,
+          "values": {
+            "min_good": "35",
+            "max_good": "70",
+            "min_acceptable": "25",
+            "max_acceptable": "80",
+            "current": "61",
+            "currentFormatted": "61"
+          },
+          "unit": "%/h",
+          "absolute_values": {
+            "min": "0",
+            "max": "85",
+            "minText": "0",
+            "maxText": "85"
+          }
+        },
+        "salinity": {
+          "status": 2,
+          "values": {
+            "min_good": "0.6",
+            "max_good": "1",
+            "min_acceptable": "0.4",
+            "max_acceptable": "1.2",
+            "current": "1",
+            "currentFormatted": "0.50"
+          },
+          "unit": "mS/h",
+          "absolute_values": {
+            "min": "0",
+            "max": "1.4",
+            "minText": "0",
+            "maxText": "1.4"
+          }
+        },
+        "battery": "100"
+      },
+      "temperature_unit": 1,
+      "know_hows": []
+    }
+  }

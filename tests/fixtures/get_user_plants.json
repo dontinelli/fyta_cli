@@ -1,0 +1,129 @@
+{
+    "gardens": [
+      {
+        "id": 123,
+        "garden_name": "Home",
+        "origin_path": null,
+        "thumb_path": null,
+        "mac_address": null
+      }
+    ],
+    "plants": [
+      {
+        "id": 0,
+        "nickname": "Gummibaum",
+        "scientific_name": "Ficus elastica",
+        "status": 2,
+        "plant_id": 201,
+        "family_id": null,
+        "wifi_status": 1,
+        "thumb_path": "<url>",
+        "origin_path": "<url>",
+        "plant_thumb_path": "<url>",
+        "plant_origin_path": "<url>",
+        "received_data_at": "2023-01-00 10:10:00",
+        "temperature_optimal_hours": 22,
+        "light_optimal_hours": 0,
+        "temperature_status": 2,
+        "light_status": 1,
+        "moisture_status": 3,
+        "salinity_status": 2,
+        "garden": {
+          "id": 123
+        },
+        "sensor": {
+          "id": "AA:AA:AA:2B:AF:F4",
+          "has_sensor": true,
+          "status": 1,
+          "uuid_android": null,
+          "uuid_ios": "4AAAAAA6F-0457-3233-8A43-032B5377E763",
+          "version": "0.30.0",
+          "is_battery_low": false,
+          "received_data_at": "2023-01-01 10:10:00"
+        },
+        "hub": {
+          "id": 123,
+          "hub_id": "AA:AA:AA:27:7D:6A",
+          "status": 1,
+          "received_data_at": "2023-01-01 01:10:01",
+          "reached_hub_at": "2023-01-01 10:10:01"
+        }
+      },
+      {
+        "id": 1,
+        "nickname": "Kakaobaum",
+        "scientific_name": "Theobroma cacao",
+        "status": 2,
+        "plant_id": 201,
+        "family_id": null,
+        "wifi_status": 1,
+        "thumb_path": "<url>",
+        "origin_path": "<url>",
+        "plant_thumb_path": "<url>",
+        "plant_origin_path": "<url>",
+        "received_data_at": "2023-01-00 10:10:00",
+        "temperature_optimal_hours": 22,
+        "light_optimal_hours": 0,
+        "temperature_status": 2,
+        "light_status": 1,
+        "moisture_status": 3,
+        "salinity_status": 2,
+        "garden": {
+          "id": 123
+        },
+        "sensor": {
+          "id": "AA:AA:AA:2B:AF:F4",
+          "has_sensor": true,
+          "status": 1,
+          "uuid_android": null,
+          "uuid_ios": "4AAAAAA6F-0457-3233-8A43-032B5377E763",
+          "version": "0.30.0",
+          "is_battery_low": false,
+          "received_data_at": "2023-01-01 10:10:00"
+        },
+        "hub": {
+          "id": 123,
+          "hub_id": "AA:AA:AA:27:7D:6A",
+          "status": 1,
+          "received_data_at": "2023-01-01 01:10:01",
+          "reached_hub_at": "2023-01-01 10:10:01"
+        }
+      },
+      {
+        "id": 2,
+        "nickname": "Traumpflanze",
+        "scientific_name": "",
+        "status": null,
+        "plant_id": 201,
+        "family_id": null,
+        "wifi_status": 1,
+        "thumb_path": "<url>",
+        "origin_path": "<url>",
+        "plant_thumb_path": "<url>",
+        "plant_origin_path": "<url>",
+        "received_data_at": null,
+        "temperature_optimal_hours": 22,
+        "light_optimal_hours": 0,
+        "garden": {
+          "id": 123
+        },
+        "sensor": {
+          "id": null,
+          "has_sensor": false,
+          "status": 0,
+          "uuid_android": null,
+          "uuid_ios": null,
+          "version": null,
+          "is_battery_low": false,
+          "received_data_at": null
+        },
+        "hub": {
+          "id": null,
+          "hub_id": null,
+          "status": null,
+          "received_data_at": null,
+          "reached_hub_at": null
+        }
+      }      
+    ]
+  }
