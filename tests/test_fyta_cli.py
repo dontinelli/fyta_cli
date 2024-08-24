@@ -157,8 +157,12 @@ async def test_get_plant_data(
         body=load_fixture("get_measurements.json"),
     )
 
-    fyta_connector = FytaConnector("example@example.com", "examplepassword",
-                                   "111111111111111111111111111111111111111", datetime.now() + timedelta(days=1))
+    fyta_connector = FytaConnector(
+        "example@example.com",
+        "examplepassword",
+        "111111111111111111111111111111111111111",
+        datetime.now() + timedelta(days=1)
+    )
 
     plants: dict[int, Plant] = await fyta_connector.update_all_plants()
 
