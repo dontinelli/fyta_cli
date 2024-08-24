@@ -1,0 +1,55 @@
+# serializer version: 1
+# name: test_get_plant_data[asyncio]
+  dict({
+    0: dict({
+      'battery_level': 100.0,
+      'battery_status': False,
+      'last_updated': datetime.datetime(2023, 1, 1, 10, 10, tzinfo=datetime.timezone.utc),
+      'light': 2.0,
+      'light_status': <PlantMeasurementStatus.TOO_LOW: 1>,
+      'moisture': 61.0,
+      'moisture_status': <PlantMeasurementStatus.PERFECT: 3>,
+      'name': 'Gummibaum',
+      'online': True,
+      'ph': None,
+      'plant_id': 201,
+      'plant_origin_path': '<url>',
+      'plant_thumb_path': '<url>',
+      'salinity': 1.0,
+      'salinity_status': <PlantMeasurementStatus.LOW: 2>,
+      'scientific_name': 'Ficus elastica',
+      'sensor_available': True,
+      'status': <PlantStatus.NEED_ATTENTION: 2>,
+      'sw_version': '0.30.0',
+      'temperature': 18.0,
+      'temperature_status': <PlantMeasurementStatus.LOW: 2>,
+    }),
+    1: dict({
+      'battery_level': 50.0,
+      'battery_status': False,
+      'last_updated': datetime.datetime(2023, 1, 1, 10, 10, tzinfo=datetime.timezone.utc),
+      'light': 2.0,
+      'light_status': <PlantMeasurementStatus.TOO_LOW: 1>,
+      'moisture': 61.0,
+      'moisture_status': <PlantMeasurementStatus.PERFECT: 3>,
+      'name': 'Kakaobaum',
+      'online': True,
+      'ph': None,
+      'plant_id': 201,
+      'plant_origin_path': '<url>',
+      'plant_thumb_path': '<url>',
+      'salinity': 1.0,
+      'salinity_status': <PlantMeasurementStatus.LOW: 2>,
+      'scientific_name': 'Theobroma cacao',
+      'sensor_available': True,
+      'status': <PlantStatus.NEED_ATTENTION: 2>,
+      'sw_version': '0.30.0',
+      'temperature': 18.0,
+      'temperature_status': <PlantMeasurementStatus.LOW: 2>,
+    }),
+  })
+# ---
+# name: test_get_plant_list[asyncio]
+  dict({
+  })
+# ---
