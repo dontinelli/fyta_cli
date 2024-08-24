@@ -1,7 +1,6 @@
 """Connector class to manage access to FYTA API."""
 
 from datetime import datetime, tzinfo, UTC
-from typing import Any
 from zoneinfo import ZoneInfo
 
 from .fyta_client import Client
