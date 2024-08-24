@@ -1,0 +1,78 @@
+{
+  "version": "1.0.0",
+  "tasks": [
+    {
+      "label": "Pytest",
+      "type": "shell",
+      "command": "pytest tests",
+      "dependsOn": ["Install all Requirements"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Ruff",
+      "type": "shell",
+      "command": "pre-commit run ruff --all-files",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Pylint",
+      "type": "shell",
+      "command": "pylint src tests",
+      "dependsOn": ["Install all Requirements"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Code Coverage",
+      "detail": "Generate code coverage report.",
+      "type": "shell",
+      "command": "pytest tests --cov=src.fyta_cli --cov-report term-missing --durations-min=1 --durations=0",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Install all Requirements",
+      "type": "shell",
+      "command": "pip install -r requirements.txt",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

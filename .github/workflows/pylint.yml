@@ -7,18 +7,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.11", "3.12"]
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+    - name: ⤵️ Checkout the repository
+      uses: actions/checkout@v4.1.7
+    - name: 🏗 Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5.0.0
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+        cache: "pip"
+    - name: 🏗 Install requirement
       run: |
         python -m pip install --upgrade pip
-        pip install pylint
         pip install -r requirements.txt
-    - name: Analysing the code with pylint
+    - name: 🏗 Install pylint
+      run: python3 -m pip install pylint
+    - name: 🚀 Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')

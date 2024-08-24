@@ -1,7 +1,6 @@
 """Connector class to manage access to FYTA API."""
 
-from datetime import datetime, UTC
-from typing import Any
+from datetime import datetime, tzinfo, UTC
 from zoneinfo import ZoneInfo
 
 from .fyta_client import Client
@@ -24,7 +23,7 @@ class FytaConnector:
     ) -> None:
         """Initialize connector class."""
 
-        timezone: ZoneInfo = UTC if tz == "" else ZoneInfo(tz)
+        timezone: tzinfo = UTC if tz == "" else ZoneInfo(tz)
         ex: datetime = (
             datetime.now(timezone)
             if expiration is None
@@ -32,7 +31,7 @@ class FytaConnector:
         )
         self.online: bool = False
         self.plant_list: dict[int, str] = {}
-        self.plants: dict[int, dict[str, Any]] = {}
+        self.plants: dict[int, Plant] = {}
 
         self.client = Client(email, password, access_token, ex, timezone)
 
@@ -78,7 +77,7 @@ class FytaConnector:
 
         p: dict = await self.client.get_plant_data(plant_id)
 
-        current_plant = Plant
+        current_plant = Plant.from_dict({"key": "value"})
 
         if ("plant" not in p) or (p["plant"]["sensor"] is None):
             current_plant.sensor_available = False

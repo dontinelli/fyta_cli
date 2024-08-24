@@ -1,0 +1,33 @@
+name: Typing
+
+# yamllint disable-line rule:truthy
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+env:
+    DEFAULT_PYTHON: "3.11"
+
+jobs:
+    mypy:
+        name: mypy
+        runs-on: ubuntu-latest
+        steps:
+        - name: ⤵️ Check out code from GitHub
+          uses: actions/checkout@v4.1.7
+        - name: 🏗 Set up Python ${{ env.DEFAULT_PYTHON }}
+          id: python
+          uses: actions/setup-python@v5.1.1
+          with:
+            python-version: ${{ env.DEFAULT_PYTHON }}
+            cache: "pip"
+        - name: 🏗 Install dependencies
+          run: python3 -m pip install -r requirements.txt
+        - name: 🏗 Install mypy
+          run: python3 -m pip install mypy
+        - name: 🚀 Run mypy
+          run: MYPYPATH=src mypy --namespace-packages --explicit-package-bases src tests
