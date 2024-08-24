@@ -5,10 +5,9 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, tzinfo
 import logging
 from typing import Any
-from zoneinfo import ZoneInfo
 
 from aiohttp import BasicAuth, ClientSession
 
@@ -38,7 +37,7 @@ class Client:
         password: str,
         access_token: str,
         expiration: datetime,
-        tz: ZoneInfo,
+        tz: tzinfo,
     ):
         """Initialization."""
 
