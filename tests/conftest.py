@@ -2,11 +2,9 @@
 
 from typing import Generator
 
-#import aiohttp
 from aioresponses import aioresponses
 import pytest
 
-#from fyta_client import Client
 from syrupy import SnapshotAssertion
 
 from .syrupy import FytaSnapshotExtension
