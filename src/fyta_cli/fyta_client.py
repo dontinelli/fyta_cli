@@ -49,7 +49,7 @@ class Client:
         self.session: ClientSession = ClientSession()
         self._close_session = True
 
-        self.request_timeout = 20
+        self.request_timeout = 60
 
     async def test_connection(self) -> bool:
         """Test the connection to FYTA-Server"""
