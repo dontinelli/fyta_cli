@@ -4,12 +4,11 @@
 
 from __future__ import annotations
 
-import asyncio
 from datetime import datetime, timedelta, tzinfo
 import logging
 from typing import Any
 
-from aiohttp import BasicAuth, ClientSession
+from aiohttp import BasicAuth, ClientSession, ClientTimeout
 
 from .fyta_exceptions import (
     FytaConnectionError,
@@ -50,7 +49,7 @@ class Client:
         self.session: ClientSession = ClientSession()
         self._close_session = True
 
-        self.request_timeout = 10
+        self.request_timeout = 20
 
     async def test_connection(self) -> bool:
         """Test the connection to FYTA-Server"""
@@ -70,7 +69,7 @@ class Client:
             self.access_token != ""
             and self.expiration.timestamp() > datetime.now().timestamp()
         ):
-            return Credentials(access_token = self.access_token, expiration = self.expiration)
+            return Credentials(access_token=self.access_token, expiration=self.expiration)
 
         payload = {
             "email": self.email,
@@ -78,14 +77,14 @@ class Client:
         }
 
         try:
-            async with asyncio.timeout(self.request_timeout):
-                response = await self.session.post(
-                    url=FYTA_AUTH_URL,
-                    auth=BasicAuth(self.email, self.password),
-                    json=payload,
-                )
+            response = await self.session.post(
+                url=FYTA_AUTH_URL,
+                auth=BasicAuth(self.email, self.password),
+                json=payload,
+                timeout=ClientTimeout(total=self.request_timeout),
+            )
 
-        except asyncio.TimeoutError as exception:
+        except TimeoutError as exception:
             _LOGGER.exception("timeout error")
             msg = "Timeout occurred while connecting to Fyta-server"
             raise FytaConnectionError(msg) from exception
@@ -108,7 +107,7 @@ class Client:
             seconds=int(json_response["expires_in"])
         )
 
-        return Credentials(access_token = self.access_token, expiration = self.expiration)
+        return Credentials(access_token=self.access_token, expiration=self.expiration)
 
     async def get_plants(self) -> dict[int, str]:
         """Get a list of all available plants from FYTA"""
@@ -126,9 +125,12 @@ class Client:
         }
 
         try:
-            async with asyncio.timeout(self.request_timeout):
-                response = await self.session.get(url=FYTA_PLANT_URL, headers=header)
-        except asyncio.TimeoutError as exception:
+            response = await self.session.get(
+                url=FYTA_PLANT_URL,
+                headers=header,
+                timeout=ClientTimeout(total=self.request_timeout),
+            )
+        except TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise FytaConnectionError(msg) from exception
 
@@ -170,9 +172,12 @@ class Client:
         url = f"{FYTA_PLANT_URL}/{plant_id}"
 
         try:
-            async with asyncio.timeout(self.request_timeout):
-                response = await self.session.get(url=url, headers=header)
-        except asyncio.TimeoutError as exception:
+            response = await self.session.get(
+                url=url,
+                headers=header,
+                timeout=ClientTimeout(total=self.request_timeout),
+            )
+        except TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise FytaConnectionError(msg) from exception
 
@@ -180,7 +185,8 @@ class Client:
 
         if content_type.count("text/html") > 0:
             text = await response.text()
-            msg = f"Error occurred while fetching plant data for plant {plant_id}"
+            msg = f"Error occurred while fetching plant data for plant {
+                plant_id}"
             raise FytaPlantError(
                 msg,
                 {"Content-Type": content_type, "response": text},
@@ -188,14 +194,18 @@ class Client:
 
         plant = await response.json()
 
-        #fetch DLI information from measurements
+        # fetch DLI information from measurements
         url = f"{FYTA_PLANT_URL}/measurements/{plant_id}"
         body = "{'search': {'timeline': 'day'}}"
 
         try:
-            async with asyncio.timeout(self.request_timeout):
-                response = await self.session.post(url=url, headers=header, data=body)
-        except asyncio.TimeoutError as exception:
+            response = await self.session.post(
+                url=url,
+                headers=header,
+                data=body,
+                timeout=ClientTimeout(total=self.request_timeout),
+            )
+        except TimeoutError as exception:
             msg = "Timeout occurred while connecting to Fyta-server"
             raise FytaConnectionError(msg) from exception
 
@@ -203,7 +213,8 @@ class Client:
 
         if content_type.count("text/html") > 0:
             text = await response.text()
-            msg = f"Error occurred while fetching plant data for plant {plant_id}"
+            msg = f"Error occurred while fetching plant data for plant {
+                plant_id}"
             raise FytaPlantError(
                 msg,
                 {"Content-Type": content_type, "response": text},
@@ -212,7 +223,8 @@ class Client:
         measurements = await response.json()
 
         if measurements["dli_light"] != []:
-            plant["plant"] |= {"dli_light": measurements["dli_light"][0]["dli_light"]}
+            plant["plant"] |= {
+                "dli_light": measurements["dli_light"][0]["dli_light"]}
 
         return plant
 
