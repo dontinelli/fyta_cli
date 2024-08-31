@@ -263,14 +263,9 @@ async def test_get_plant_data_exceptions(
     )
     responses.get(
         FYTA_PLANT_URL + "/1",
-        status=200,
-        body=load_fixture("get_plant_details_1.json"),
-    )
-    responses.post(
-        FYTA_PLANT_URL + "/measurements/1",
         headers=headers,
         timeout=request_timeout,
-        body=load_fixture("get_measurements.json"),
+        body=load_fixture("get_plant_details_1.json"),
     )
 
     fyta_connector = FytaConnector(

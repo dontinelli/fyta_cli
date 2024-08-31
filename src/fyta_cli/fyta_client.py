@@ -193,37 +193,6 @@ class Client:
 
         plant = await response.json()
 
-        # fetch DLI information from measurements
-        url = f"{FYTA_PLANT_URL}/measurements/{plant_id}"
-        body = "{'search': {'timeline': 'day'}}"
-
-        try:
-            response = await self.session.post(
-                url=url,
-                headers=header,
-                data=body,
-                timeout=ClientTimeout(total=self.request_timeout),
-            )
-        except TimeoutError as exception:
-            msg = "Timeout occurred while connecting to Fyta-server"
-            raise FytaConnectionError(msg) from exception
-
-        content_type = response.headers.get("Content-Type", "")
-
-        if content_type.count("text/html") > 0:
-            text = await response.text()
-            msg = f"Error occurred while fetching plant data for plant {plant_id}"
-            raise FytaPlantError(
-                msg,
-                {"Content-Type": content_type, "response": text},
-            )
-
-        measurements = await response.json()
-
-        if measurements["dli_light"] != []:
-            plant["plant"] |= {
-                "dli_light": measurements["dli_light"][0]["dli_light"]}
-
         return plant
 
     async def close(self) -> None:
