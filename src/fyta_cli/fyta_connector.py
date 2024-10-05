@@ -1,10 +1,13 @@
 """Connector class to manage access to FYTA API."""
 
 from datetime import datetime, tzinfo, UTC
+import logging
 from zoneinfo import ZoneInfo
 
 from .fyta_client import Client
 from .fyta_models import Credentials, Plant
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class FytaConnector:
@@ -84,10 +87,14 @@ class FytaConnector:
 
         plant_data: dict = p["plant"]
 
-        current_plant = Plant.from_dict(plant_data)
-        current_plant.last_updated = current_plant.last_updated.astimezone(self.client.timezone)
+        try:
+            current_plant = Plant.from_dict(plant_data)
+            current_plant.last_updated = current_plant.last_updated.astimezone(self.client.timezone)
+            return current_plant
+        except ValueError:
+            _LOGGER.exception("Error in parsing plant data: %s", plant_data)
 
-        return current_plant
+        return None
 
     @property
     def access_token(self) -> str:
