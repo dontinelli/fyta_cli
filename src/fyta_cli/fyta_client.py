@@ -29,6 +29,7 @@ class Client:
 
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-positional-arguments
 
     def __init__(
         self,
@@ -124,6 +125,8 @@ class Client:
             "Content-Type": "application/json",
         }
 
+        _LOGGER.debug("Try getting list of plants")
+
         try:
             response = await self.session.get(
                 url=FYTA_PLANT_URL,
@@ -147,6 +150,7 @@ class Client:
         json_response = await response.json()
 
         plant_list: dict = json_response["plants"]
+        _LOGGER.debug("List of plants: %s", plant_list)
 
         plants: dict[int, str] = {}
         for plant in plant_list:
@@ -171,6 +175,8 @@ class Client:
 
         url = f"{FYTA_PLANT_URL}/{plant_id}"
 
+        _LOGGER.debug("Try getting data for plant: %s", plant_id)
+
         try:
             response = await self.session.get(
                 url=url,
@@ -192,6 +198,7 @@ class Client:
             )
 
         plant = await response.json()
+        _LOGGER.debug("Plant data received: %s", plant)
 
         return plant
 
