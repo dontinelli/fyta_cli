@@ -87,14 +87,10 @@ class FytaConnector:
 
         plant_data: dict = p["plant"]
 
-        try:
-            current_plant = Plant.from_dict(plant_data)
-            current_plant.last_updated = current_plant.last_updated.astimezone(self.client.timezone)
-            return current_plant
-        except ValueError:
-            _LOGGER.exception("Error in parsing plant data: %s", plant_data)
+        current_plant = Plant.from_dict(plant_data)
+        current_plant.last_updated = current_plant.last_updated.astimezone(self.client.timezone)
 
-        return None
+        return current_plant
 
     @property
     def access_token(self) -> str:
