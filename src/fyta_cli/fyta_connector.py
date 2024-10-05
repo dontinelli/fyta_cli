@@ -1,13 +1,10 @@
 """Connector class to manage access to FYTA API."""
 
 from datetime import datetime, tzinfo, UTC
-import logging
 from zoneinfo import ZoneInfo
 
 from .fyta_client import Client
 from .fyta_models import Credentials, Plant
-
-_LOGGER = logging.getLogger(__name__)
 
 
 class FytaConnector:
