@@ -42,10 +42,10 @@ class Plant(DataClassDictMixin):
     battery_level: float | None
     battery_status: bool
     last_updated: datetime
-    light: float
+    light: float | None
     light_status: PlantMeasurementStatus
     name: str = field(metadata=field_options(alias="nickname"))
-    moisture: float
+    moisture: float  | None
     moisture_status: PlantMeasurementStatus
     sensor_available: bool
     sw_version: str
@@ -55,10 +55,10 @@ class Plant(DataClassDictMixin):
     plant_id: int
     plant_origin_path: str
     plant_thumb_path: str
-    salinity: float
+    salinity: float | None
     salinity_status: PlantMeasurementStatus
     scientific_name: str
-    temperature: float
+    temperature: float  | None
     temperature_status: PlantMeasurementStatus
 
     @classmethod
