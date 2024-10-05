@@ -39,7 +39,7 @@ class Plant(DataClassDictMixin):
 
     # pylint: disable=too-many-instance-attributes
 
-    battery_level: float
+    battery_level: float | None
     battery_status: bool
     last_updated: datetime
     light: float
@@ -70,14 +70,14 @@ class Plant(DataClassDictMixin):
         if d.get("measurements") is not None:
             d |= {"battery_level": d["measurements"]["battery"]}
             d |= {"light": d["measurements"]["light"]["values"]["current"]}
-            d |= {"light_status": d["measurements"]["light"].get("status")}
+            d |= {"light_status": d["measurements"]["light"].get("status",0)}
             d |= {"moisture": d["measurements"]["moisture"]["values"]["current"]}
-            d |= {"moisture_status": d["measurements"]["moisture"].get("status")}
+            d |= {"moisture_status": d["measurements"]["moisture"].get("status",0)}
             d |= {"ph": d["measurements"].get("ph").get("values").get("current")}
             d |= {"salinity": d["measurements"]["salinity"]["values"]["current"]}
-            d |= {"salinity_status": d["measurements"]["salinity"].get("status")}
+            d |= {"salinity_status": d["measurements"]["salinity"].get("status",0)}
             d |= {"temperature": d["measurements"]["temperature"]["values"]["current"]}
-            d |= {"temperature_status": d["measurements"]["temperature"].get("status")}
+            d |= {"temperature_status": d["measurements"]["temperature"].get("status",0)}
 
         if d.get("sensor") is not None:
             d |= {"battery_status": d["sensor"]["is_battery_low"]}
