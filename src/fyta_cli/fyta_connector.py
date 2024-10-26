@@ -79,7 +79,7 @@ class FytaConnector:
 
         p: dict = await self.client.get_plant_data(plant_id)
 
-        if ("plant" not in p) or (p["plant"]["sensor"] is None):
+        if ("plant" not in p) or (p["plant"]["sensor"] is None) or (p["plant"]["measurements"] is None):
             return None
 
         plant_data: dict = p["plant"]
