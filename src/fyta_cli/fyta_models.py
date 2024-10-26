@@ -41,7 +41,7 @@ class Plant(DataClassDictMixin):
 
     battery_level: float | None
     battery_status: bool
-    last_updated: datetime
+    last_updated: datetime | None
     light: float | None
     light_status: PlantMeasurementStatus
     name: str = field(metadata=field_options(alias="nickname"))
