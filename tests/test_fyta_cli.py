@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, UTC
 from aioresponses import aioresponses
 
 import pytest
-from syrupy import SnapshotAssertion
+from syrupy.assertion import SnapshotAssertion
 
 from fyta_cli.fyta_client import FYTA_AUTH_URL, FYTA_PLANT_URL
 from fyta_cli.fyta_connector import FytaConnector

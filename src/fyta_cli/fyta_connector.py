@@ -12,7 +12,6 @@ class FytaConnector:
 
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-arguments
-    # pylint: disable=too-many-positional-arguments
 
     def __init__(
         self,
@@ -85,7 +84,8 @@ class FytaConnector:
         plant_data: dict = p["plant"]
 
         current_plant = Plant.from_dict(plant_data)
-        current_plant.last_updated = current_plant.last_updated.astimezone(self.client.timezone)
+        if current_plant.last_updated is not None:
+            current_plant.last_updated = current_plant.last_updated.astimezone(self.client.timezone)
 
         return current_plant
 
