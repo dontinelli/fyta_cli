@@ -1,4 +1,4 @@
-aiohttp==3.10.2
+aiohttp==3.10.11
 aioresponses == 0.7.6
 mashumaro>=3.13
 syrupy == 4.6.1
