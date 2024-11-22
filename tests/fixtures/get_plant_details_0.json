@@ -14,8 +14,21 @@
       "received_data_at": "2023-01-01 10:10:01",
       "gathering_data": false,
       "is_illegal": false,
+      "is_productive_plant": false,
       "not_supported": false,
       "sensor_update_available": false,
+      "fertilisation": {
+        "last_fertilised_at": "2024-11-16",
+        "fertilise_at": "2025-01-11",
+        "was_repotted": true
+      },
+      "notifications": {
+        "light": false,
+        "temperature": false,
+        "water": true,
+        "nutrition": true
+      },
+      "dismissed_sensor_message_at": null,
       "garden": {
         "id": 123,
         "name": "Home"
@@ -53,6 +66,10 @@
             "minText": "0",
             "maxText": "7.5"
           }
+        },
+        "nutrients": {
+          "type": "nutrients",
+          "status": 3
         },
         "temperature": {
           "status": 2,
