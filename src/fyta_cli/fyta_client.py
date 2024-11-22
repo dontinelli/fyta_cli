@@ -38,6 +38,7 @@ class Client:
         access_token: str,
         expiration: datetime,
         tz: tzinfo,
+        session: ClientSession | None,
     ):
         """Initialization."""
 
@@ -47,7 +48,11 @@ class Client:
         self.expiration = expiration
         self.timezone = tz
 
-        self.session: ClientSession = ClientSession()
+        if not session:
+            self.session = ClientSession()
+        else:
+            self.session = session
+
         self._close_session = True
 
         self.request_timeout = 60

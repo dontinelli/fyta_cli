@@ -3,6 +3,8 @@
 from datetime import datetime, tzinfo, UTC
 from zoneinfo import ZoneInfo
 
+from aiohttp import ClientSession
+
 from .fyta_client import Client
 from .fyta_models import Credentials, Plant
 
@@ -21,6 +23,7 @@ class FytaConnector:
         access_token: str = "",
         expiration: datetime | None = None,
         tz: str = "",
+        session: ClientSession | None = None,
     ) -> None:
         """Initialize connector class."""
 
@@ -34,7 +37,7 @@ class FytaConnector:
         self.plant_list: dict[int, str] = {}
         self.plants: dict[int, Plant] = {}
 
-        self.client = Client(email, password, access_token, ex, timezone)
+        self.client = Client(email, password, access_token, ex, timezone, session)
 
     async def test_connection(self) -> bool:
         """Test if connection to FYTA API works."""
