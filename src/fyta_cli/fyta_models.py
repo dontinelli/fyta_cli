@@ -45,6 +45,8 @@ class Plant(DataClassDictMixin):
     # pylint: disable=too-many-instance-attributes
 
     battery_level: float | None
+    fertilise_last: datetime | None
+    fertilise_next: datetime | None
     last_updated: datetime | None
     light: float | None
     light_status: PlantMeasurementStatus
@@ -52,8 +54,14 @@ class Plant(DataClassDictMixin):
     name: str = field(metadata=field_options(alias="nickname"))
     moisture: float  | None
     moisture_status: PlantMeasurementStatus
+    notification_light: bool
+    notification_nutrition: bool
+    notification_temperature: bool
+    notification_water: bool
+    nutrients_status: PlantMeasurementStatus
     sensor_available: bool
     sensor_id: str | None
+    sensor_status: SensorStatus
     sensor_update_available: bool
     sw_version: str
     status: PlantStatus
@@ -62,6 +70,8 @@ class Plant(DataClassDictMixin):
     plant_id: int
     plant_origin_path: str
     plant_thumb_path: str
+    productive_plant: bool =field(metadata=field_options(alias="is_productive_plant"))
+    repotted: bool
     salinity: float | None
     salinity_status: PlantMeasurementStatus
     scientific_name: str
@@ -80,6 +90,7 @@ class Plant(DataClassDictMixin):
             d |= {"light_status": int(d["measurements"]["light"].get("status") or 0)}
             d |= {"moisture": d["measurements"]["moisture"]["values"]["current"]}
             d |= {"moisture_status": int(d["measurements"]["moisture"].get("status") or 0)}
+            d |= {"nutrients_status": int(d["measurements"]["nutrients"].get("status") or 0)}
             d |= {"ph": d["measurements"].get("ph").get("values").get("current")}
             d |= {"salinity": d["measurements"]["salinity"]["values"]["current"]}
             d |= {"salinity_status": int(d["measurements"]["salinity"].get("status") or 0)}
@@ -90,7 +101,16 @@ class Plant(DataClassDictMixin):
             d |= {"last_updated": d["sensor"]["received_data_at"]}
             d |= {"low_battery": d["sensor"]["is_battery_low"]}
             d |= {"sensor_id": d["sensor"]["id"]}
-            d |= {"sensor_status": int(d["sensor"].get("status") or 0)}
             d |= {"sw_version": d["sensor"]["version"]}
+        d |= {"sensor_status": int(d.get("sensor",{}).get("status") or 0)}
+
+        d |= {"notification_light": d.get("notifications",{}).get("light",False)}
+        d |= {"notification_nutrition": d.get("notifications",{}).get("nutrition",False)}
+        d |= {"notification_temperature": d.get("notifications",{}).get("temperature",False)}
+        d |= {"notification_water": d.get("notifications",{}).get("water",False)}
+
+        d |= {"fertilise_last": d.get("fertilisation",{}).get("last_fertilised_at")}
+        d |= {"fertilise_next": d.get("fertilisation",{}).get("fertilise_at")}
+        d |= {"repotted": d.get("fertilisation",{}).get("was_repotted",False)}
 
         return d
