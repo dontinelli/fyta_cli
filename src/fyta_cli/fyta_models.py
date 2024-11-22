@@ -32,6 +32,11 @@ class PlantMeasurementStatus(IntEnum):
     HIGH = 4
     TOO_HIGH = 5
 
+class SensorStatus(IntEnum):
+    """Sensor status enum."""
+    NONE = 0
+    CORRECT = 1
+    ERROR = 2
 
 @dataclass
 class Plant(DataClassDictMixin):
@@ -40,15 +45,17 @@ class Plant(DataClassDictMixin):
     # pylint: disable=too-many-instance-attributes
 
     battery_level: float | None
-    battery_status: bool
     last_updated: datetime | None
     light: float | None
     light_status: PlantMeasurementStatus
+    low_battery: bool
     name: str = field(metadata=field_options(alias="nickname"))
     moisture: float  | None
     moisture_status: PlantMeasurementStatus
     nutrients_status: PlantMeasurementStatus
     sensor_available: bool
+    sensor_id: str | None
+    sensor_update_available: bool
     sw_version: str
     status: PlantStatus
     online: bool
@@ -82,8 +89,10 @@ class Plant(DataClassDictMixin):
             d |= {"temperature_status": int(d["measurements"]["temperature"].get("status") or 0)}
 
         if d.get("sensor") is not None:
-            d |= {"battery_status": d["sensor"]["is_battery_low"]}
             d |= {"last_updated": d["sensor"]["received_data_at"]}
+            d |= {"low_battery": d["sensor"]["is_battery_low"]}
+            d |= {"sensor_id": d["sensor"]["id"]}
+            d |= {"sensor_status": int(d["sensor"].get("status") or 0)}
             d |= {"sw_version": d["sensor"]["version"]}
 
         return d
