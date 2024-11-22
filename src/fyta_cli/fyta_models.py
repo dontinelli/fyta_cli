@@ -47,6 +47,7 @@ class Plant(DataClassDictMixin):
     name: str = field(metadata=field_options(alias="nickname"))
     moisture: float  | None
     moisture_status: PlantMeasurementStatus
+    nutrients_status: PlantMeasurementStatus
     sensor_available: bool
     sw_version: str
     status: PlantStatus
@@ -73,6 +74,7 @@ class Plant(DataClassDictMixin):
             d |= {"light_status": int(d["measurements"]["light"].get("status") or 0)}
             d |= {"moisture": d["measurements"]["moisture"]["values"]["current"]}
             d |= {"moisture_status": int(d["measurements"]["moisture"].get("status") or 0)}
+            d |= {"nutrients_status": int(d["measurements"]["nutrients"].get("status") or 0)}
             d |= {"ph": d["measurements"].get("ph").get("values").get("current")}
             d |= {"salinity": d["measurements"]["salinity"]["values"]["current"]}
             d |= {"salinity_status": int(d["measurements"]["salinity"].get("status") or 0)}
