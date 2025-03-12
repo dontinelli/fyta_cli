@@ -18,7 +18,7 @@ jobs:
         - name: 🏗 Set up Python
           uses: actions/setup-python@v5.0.0
           with:
-            python-version: "3.11"
+            python-version: "3.13"
             cache: "pip"
         - name: 🏗 Install requirements
           run: python3 -m pip install -r requirements.txt
