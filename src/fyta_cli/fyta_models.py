@@ -10,7 +10,6 @@ from mashumaro import DataClassDictMixin, field_options
 @dataclass
 class Credentials():
     """Fyta login model."""
-
     access_token: str
     expiration: datetime
 
@@ -32,11 +31,13 @@ class PlantMeasurementStatus(IntEnum):
     HIGH = 4
     TOO_HIGH = 5
 
+
 class SensorStatus(IntEnum):
     """Sensor status enum."""
     NONE = 0
     CORRECT = 1
     ERROR = 2
+
 
 @dataclass
 class Plant(DataClassDictMixin):
@@ -49,10 +50,18 @@ class Plant(DataClassDictMixin):
     fertilise_next: datetime | None
     last_updated: datetime | None
     light: float | None
+    light_min_acceptable: float | None
+    light_min_good: float | None
+    light_max_acceptable: float | None
+    light_max_good: float | None
     light_status: PlantMeasurementStatus
     low_battery: bool
     name: str = field(metadata=field_options(alias="nickname"))
-    moisture: float  | None
+    moisture: float | None
+    moisture_min_acceptable: float | None
+    moisture_min_good: float | None
+    moisture_max_acceptable: float | None
+    moisture_max_good: float | None
     moisture_status: PlantMeasurementStatus
     notification_light: bool
     notification_nutrition: bool
@@ -70,13 +79,24 @@ class Plant(DataClassDictMixin):
     plant_id: int
     plant_origin_path: str
     plant_thumb_path: str
-    productive_plant: bool =field(metadata=field_options(alias="is_productive_plant"))
+    productive_plant: bool = field(
+        metadata=field_options(alias="is_productive_plant"))
     repotted: bool
     salinity: float | None
+    salinity_min_acceptable: float | None
+    salinity_min_good: float | None
+    salinity_max_acceptable: float | None
+    salinity_max_good: float | None
     salinity_status: PlantMeasurementStatus
     scientific_name: str
-    temperature: float  | None
+    temperature: float | None
+    temperature_min_acceptable: float | None
+    temperature_min_good: float | None
+    temperature_max_acceptable: float | None
+    temperature_max_good: float | None
     temperature_status: PlantMeasurementStatus
+    user_picture_path: str = field(metadata=field_options(alias="origin_path"))
+    user_thumb_path: str = field(metadata=field_options(alias="thumb_path"))
 
     @classmethod
     def __pre_deserialize__(cls, d: dict[Any, Any]) -> dict[Any, Any]:
@@ -87,30 +107,77 @@ class Plant(DataClassDictMixin):
         if d.get("measurements") is not None:
             d |= {"battery_level": d["measurements"]["battery"]}
             d |= {"light": d["measurements"]["light"]["values"]["current"]}
-            d |= {"light_status": int(d["measurements"]["light"].get("status") or 0)}
-            d |= {"moisture": d["measurements"]["moisture"]["values"]["current"]}
-            d |= {"moisture_status": int(d["measurements"]["moisture"].get("status") or 0)}
-            d |= {"nutrients_status": int(d["measurements"]["nutrients"].get("status") or 0)}
-            d |= {"ph": d["measurements"].get("ph").get("values").get("current")}
-            d |= {"salinity": d["measurements"]["salinity"]["values"]["current"]}
-            d |= {"salinity_status": int(d["measurements"]["salinity"].get("status") or 0)}
-            d |= {"temperature": d["measurements"]["temperature"]["values"]["current"]}
-            d |= {"temperature_status": int(d["measurements"]["temperature"].get("status") or 0)}
+            d |= {"light_max_acceptable": d["measurements"]
+                  ["light"]["values"]["max_acceptable"]}
+            d |= {"light_max_good": d["measurements"]
+                  ["light"]["values"]["max_good"]}
+            d |= {"light_min_acceptable": d["measurements"]
+                  ["light"]["values"]["min_acceptable"]}
+            d |= {"light_min_good": d["measurements"]
+                  ["light"]["values"]["min_good"]}
+            d |= {"light_status": int(
+                d["measurements"]["light"].get("status") or 0)}
+            d |= {"moisture": d["measurements"]
+                  ["moisture"]["values"]["current"]}
+            d |= {"moisture_max_acceptable": d["measurements"]
+                  ["moisture"]["values"]["max_acceptable"]}
+            d |= {"moisture_max_good": d["measurements"]
+                  ["moisture"]["values"]["max_good"]}
+            d |= {"moisture_min_acceptable": d["measurements"]
+                  ["moisture"]["values"]["min_acceptable"]}
+            d |= {"moisture_min_good": d["measurements"]
+                  ["moisture"]["values"]["min_good"]}
+            d |= {"moisture_status": int(
+                d["measurements"]["moisture"].get("status") or 0)}
+            d |= {"nutrients_status": int(
+                d["measurements"]["nutrients"].get("status") or 0)}
+            d |= {"ph": d["measurements"].get(
+                "ph").get("values").get("current")}
+            d |= {"salinity": d["measurements"]
+                  ["salinity"]["values"]["current"]}
+            d |= {"salinity_max_acceptable": d["measurements"]
+                  ["salinity"]["values"]["max_acceptable"]}
+            d |= {"salinity_max_good": d["measurements"]
+                  ["salinity"]["values"]["max_good"]}
+            d |= {"salinity_min_acceptable": d["measurements"]
+                  ["salinity"]["values"]["min_acceptable"]}
+            d |= {"salinity_min_good": d["measurements"]
+                  ["salinity"]["values"]["min_good"]}
+            d |= {"salinity_status": int(
+                d["measurements"]["salinity"].get("status") or 0)}
+            d |= {"temperature": d["measurements"]
+                  ["temperature"]["values"]["current"]}
+            d |= {"temperature_max_acceptable": d["measurements"]
+                  ["temperature"]["values"]["max_acceptable"]}
+            d |= {"temperature_max_good": d["measurements"]
+                  ["temperature"]["values"]["max_good"]}
+            d |= {"temperature_min_acceptable": d["measurements"]
+                  ["temperature"]["values"]["min_acceptable"]}
+            d |= {"temperature_min_good": d["measurements"]
+                  ["temperature"]["values"]["min_good"]}
+            d |= {"temperature_status": int(
+                d["measurements"]["temperature"].get("status") or 0)}
 
         if d.get("sensor") is not None:
             d |= {"last_updated": d["sensor"]["received_data_at"]}
             d |= {"low_battery": d["sensor"]["is_battery_low"]}
             d |= {"sensor_id": d["sensor"]["id"]}
             d |= {"sw_version": d["sensor"]["version"]}
-        d |= {"sensor_status": int(d.get("sensor",{}).get("status") or 0)}
+        d |= {"sensor_status": int(d.get("sensor", {}).get("status") or 0)}
 
-        d |= {"notification_light": d.get("notifications",{}).get("light",False)}
-        d |= {"notification_nutrition": d.get("notifications",{}).get("nutrition",False)}
-        d |= {"notification_temperature": d.get("notifications",{}).get("temperature",False)}
-        d |= {"notification_water": d.get("notifications",{}).get("water",False)}
+        d |= {"notification_light": d.get(
+            "notifications", {}).get("light", False)}
+        d |= {"notification_nutrition": d.get(
+            "notifications", {}).get("nutrition", False)}
+        d |= {"notification_temperature": d.get(
+            "notifications", {}).get("temperature", False)}
+        d |= {"notification_water": d.get(
+            "notifications", {}).get("water", False)}
 
-        d |= {"fertilise_last": d.get("fertilisation",{}).get("last_fertilised_at")}
-        d |= {"fertilise_next": d.get("fertilisation",{}).get("fertilise_at")}
-        d |= {"repotted": d.get("fertilisation",{}).get("was_repotted",False)}
+        d |= {"fertilise_last": d.get(
+            "fertilisation", {}).get("last_fertilised_at")}
+        d |= {"fertilise_next": d.get("fertilisation", {}).get("fertilise_at")}
+        d |= {"repotted": d.get("fertilisation", {}).get(
+            "was_repotted", False)}
 
         return d
