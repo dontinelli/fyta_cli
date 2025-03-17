@@ -303,7 +303,9 @@ async def test_get_plant_image(
 
     fyta_connector = FytaConnector("example@example.com", "examplepassword")
 
-    (content_type, raw_image) = await fyta_connector.client.get_plant_image("https://api.prod.fyta-app.de/user-plant/1/origin_path")
+    (content_type, raw_image) = await fyta_connector.client.get_plant_image(
+        "https://api.prod.fyta-app.de/user-plant/1/origin_path"
+    )
 
     assert content_type == "image/png"
     assert raw_image == bytes([100])

@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, tzinfo
 import logging
 from typing import Any
 
-from aiohttp import BasicAuth, ClientResponse, ClientSession, ClientTimeout
+from aiohttp import BasicAuth, ClientSession, ClientTimeout
 
 from .fyta_exceptions import (
     FytaConnectionError,
