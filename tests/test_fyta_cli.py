@@ -289,7 +289,7 @@ async def test_get_plant_data_exceptions(
 async def test_get_plant_image(
     responses: aioresponses,
 ) -> None:
-    """Test connection."""
+    """Test getting plant image."""
     responses.post(
         FYTA_AUTH_URL,
         status=200,
@@ -298,16 +298,57 @@ async def test_get_plant_image(
     responses.get(
         "https://api.prod.fyta-app.de/user-plant/1/origin_path",
         headers={"Content-Type": "image/png"},
+        status=200,
         body=bytes([100]),
     )
 
     fyta_connector = FytaConnector("example@example.com", "examplepassword")
 
-    (content_type, raw_image) = await fyta_connector.client.get_plant_image(
+    response = await fyta_connector.client.get_plant_image(
         "https://api.prod.fyta-app.de/user-plant/1/origin_path"
     )
 
+    assert response is not None
+    (content_type, raw_image) = response
+
     assert content_type == "image/png"
     assert raw_image == bytes([100])
+
+    await fyta_connector.client.close()
+    assert fyta_connector.client.session.closed
+
+
+async def test_get_plant_image_errors(
+    responses: aioresponses,
+) -> None:
+    """Test update errors."""
+    responses.post(
+        FYTA_AUTH_URL,
+        status=200,
+        body=load_fixture("login_response.json"),
+    )
+    responses.get(
+        "https://api.prod.fyta-app.de/user-plant/1/origin_path",
+        headers={"Content-Type": "text/html"},
+        status=500,
+    )
+    responses.get(
+        "https://api.prod.fyta-app.de/user-plant/1/origin_path",
+        headers={"Content-Type": "text/html"},
+        status=204,
+    )
+
+    fyta_connector = FytaConnector("example@example.com", "examplepassword")
+
+    response = await fyta_connector.client.get_plant_image(
+        "https://api.prod.fyta-app.de/user-plant/1/origin_path"
+    )
+    assert response is None
+
+    response = await fyta_connector.client.get_plant_image(
+        "https://api.prod.fyta-app.de/user-plant/1/origin_path"
+    )
+    assert response is None
+
     await fyta_connector.client.close()
     assert fyta_connector.client.session.closed
