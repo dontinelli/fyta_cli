@@ -285,3 +285,27 @@ async def test_get_plant_data_exceptions(
 
     await fyta_connector.client.close()
     assert fyta_connector.client.session.closed
+
+async def test_get_plant_image(
+    responses: aioresponses,
+) -> None:
+    """Test connection."""
+    responses.post(
+        FYTA_AUTH_URL,
+        status=200,
+        body=load_fixture("login_response.json"),
+    )
+    responses.get(
+        "https://api.prod.fyta-app.de/user-plant/1/origin_path",
+        headers={"Content-Type": "image/png"},
+        body=bytes([100]),
+    )
+
+    fyta_connector = FytaConnector("example@example.com", "examplepassword")
+
+    (content_type, raw_image) = await fyta_connector.client.get_plant_image("https://api.prod.fyta-app.de/user-plant/1/origin_path")
+
+    assert content_type == "image/png"
+    assert raw_image == bytes([100])
+    await fyta_connector.client.close()
+    assert fyta_connector.client.session.closed

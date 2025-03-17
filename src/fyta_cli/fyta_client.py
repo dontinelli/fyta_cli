@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, tzinfo
 import logging
 from typing import Any
 
-from aiohttp import BasicAuth, ClientSession, ClientTimeout
+from aiohttp import BasicAuth, ClientResponse, ClientSession, ClientTimeout
 
 from .fyta_exceptions import (
     FytaConnectionError,
@@ -206,6 +206,33 @@ class Client:
         _LOGGER.debug("Plant data received: %s", plant)
 
         return plant
+
+    async def get_plant_image(self, image_url) -> tuple[str | None, bytes]:
+        """Fetch the user image from the API."""
+
+        if self.expiration.timestamp() > datetime.now().timestamp():
+            await self.login()  # get new access token, if current token expired
+
+        header = {
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json",
+        }
+
+        _LOGGER.debug("Try downloading plant image")
+
+        try:
+            response = await self.session.get(
+                url=image_url,
+                headers=header,
+                timeout=ClientTimeout(total=self.request_timeout),
+            )
+        except TimeoutError as exception:
+            msg = "Timeout occurred while connecting to Fyta-server"
+            raise FytaConnectionError(msg) from exception
+
+        _LOGGER.debug("Download of image successful")
+
+        return response.headers.get("Content-Type"), await response.read()
 
     async def close(self) -> None:
         """Close open client session."""
