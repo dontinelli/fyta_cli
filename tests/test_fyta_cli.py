@@ -304,7 +304,7 @@ async def test_get_plant_image(
 
     fyta_connector = FytaConnector("example@example.com", "examplepassword")
 
-    response = await fyta_connector.client.get_plant_image(
+    response = await fyta_connector.get_plant_image(
         "https://api.prod.fyta-app.de/user-plant/1/origin_path"
     )
 
@@ -340,12 +340,12 @@ async def test_get_plant_image_errors(
 
     fyta_connector = FytaConnector("example@example.com", "examplepassword")
 
-    response = await fyta_connector.client.get_plant_image(
+    response = await fyta_connector.get_plant_image(
         "https://api.prod.fyta-app.de/user-plant/1/origin_path"
     )
     assert response is None
 
-    response = await fyta_connector.client.get_plant_image(
+    response = await fyta_connector.get_plant_image(
         "https://api.prod.fyta-app.de/user-plant/1/origin_path"
     )
     assert response is None
