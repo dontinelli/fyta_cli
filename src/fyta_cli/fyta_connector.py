@@ -93,6 +93,10 @@ class FytaConnector:
 
         return current_plant
 
+    async def get_plant_image(self, image_url) -> tuple[str | None, bytes] | None:
+        """Fetch the user image from the API."""
+        return await self.client.get_plant_image(image_url)
+
     @property
     def access_token(self) -> str:
         """Access token for FYTA API."""

@@ -5,7 +5,7 @@ class FytaError(Exception):
     """Generic exception."""
 
 class FytaConnectionError(FytaError):
-    """Analytics connection exception."""
+    """Fyta connection exception."""
 
 class FytaAuthentificationError(FytaError):
     """Fyta Password exception (wrong password)."""
