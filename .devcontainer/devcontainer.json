@@ -24,7 +24,7 @@
 		"ghcr.io/devcontainers-community/npm-features/prettier:1": {
 			"version": "latest"
 		},
-		"ghcr.io/hspaans/devcontainer-features/pytest:1": {
+		"ghcr.io/hspaans/devcontainer-features/pytest:2": {
 			"version": "latest",
 			"plugins": "pytest-testinfra"
 		}
