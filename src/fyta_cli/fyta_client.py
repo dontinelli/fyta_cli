@@ -122,7 +122,7 @@ class Client:
             self.session = ClientSession()
             self._close_session = True
 
-        if self.expiration.timestamp() > datetime.now().timestamp():
+        if self.expiration.timestamp() < datetime.now().timestamp():
             await self.login()  # get new access token, if current token expired
 
         header = {
@@ -170,7 +170,7 @@ class Client:
             self.session = ClientSession()
             self._close_session = True
 
-        if self.expiration.timestamp() > datetime.now().timestamp():
+        if self.expiration.timestamp() < datetime.now().timestamp():
             await self.login()  # get new access token, if current token expired
 
         header = {
@@ -210,7 +210,7 @@ class Client:
     async def get_plant_image(self, image_url) -> tuple[str | None, bytes] | None:
         """Fetch the user image from the API."""
 
-        if self.expiration.timestamp() > datetime.now().timestamp():
+        if self.expiration.timestamp() < datetime.now().timestamp():
             await self.login()  # get new access token, if current token expired
 
         header = {
